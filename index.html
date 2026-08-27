@@ -318,23 +318,19 @@ body {
 
 #reader {
 
-    display: none !important;
+    display: none;
 
-    width: 1px;
+    width: 100%;
 
-    height: 1px;
+    height: 360px;
 
-    position: fixed;
-
-    left: -10000px;
-
-    top: -10000px;
+    position: relative;
 
     overflow: hidden;
 
-    opacity: 0;
+    background: #111111;
 
-    pointer-events: none;
+    border-radius: 10px;
 
 }
 
@@ -342,17 +338,13 @@ body {
 
     display: block;
 
-    width: 1px;
+    width: 100%;
 
-    height: 1px;
+    height: 100%;
 
-    opacity: 0;
+    object-fit: cover;
 
-    position: fixed;
-
-    left: -10000px;
-
-    top: -10000px;
+    background: #111111;
 
 }
 
@@ -2284,6 +2276,11 @@ async function startScanner() {
         await video.play();
 
         cameraRunning = true;
+
+        // Pokazujemy podgląd na żywo.
+        // Same dwa zdjęcia i ich analiza odbywają się później
+        // automatycznie i użytkownik ich nie widzi.
+        reader.style.display = 'block';
 
         return true;
 
