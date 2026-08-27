@@ -213,7 +213,7 @@ body {
 
 
 /* =========================================================
-   GÓRA SKANERA
+   GÓRA
    ========================================================= */
 
 .top {
@@ -256,7 +256,7 @@ body {
 
 
 /* =========================================================
-   INFORMACJA O UŻYTKOWNIKU
+   UŻYTKOWNIK
    ========================================================= */
 
 .user-bar {
@@ -330,8 +330,20 @@ body {
 
 
 /* =========================================================
-   APARAT
+   SKANER
    ========================================================= */
+
+.scanner-panel {
+
+    margin-top: 8px;
+
+    border: 1px solid #dddddd;
+
+    padding: 8px;
+
+    background: #fafafa;
+
+}
 
 #reader {
 
@@ -339,7 +351,7 @@ body {
 
     width: 100%;
 
-    margin-top: 10px;
+    margin: 0;
 
     overflow: hidden;
 
@@ -350,6 +362,35 @@ body {
     width: 100% !important;
 
     height: auto !important;
+
+}
+
+#reader__scan_region {
+
+    width: 100% !important;
+
+}
+
+
+/* =========================================================
+   STATUS SKANERA
+   ========================================================= */
+
+.scanner-status {
+
+    display: none;
+
+    margin-top: 8px;
+
+    padding: 10px;
+
+    background: #eeeeee;
+
+    text-align: center;
+
+    font-size: 14px;
+
+    font-weight: 700;
 
 }
 
@@ -411,6 +452,22 @@ button:disabled {
 
 }
 
+.stop-button {
+
+    background: #ffebee;
+
+    border-color: #d0a0a0;
+
+}
+
+.admin-button {
+
+    background: #eeeeee;
+
+    border-color: #555555;
+
+}
+
 
 /* =========================================================
    KOMUNIKAT
@@ -455,6 +512,8 @@ button:disabled {
     padding: 12px;
 
     margin-top: 8px;
+
+    background: #ffffff;
 
 }
 
@@ -503,6 +562,81 @@ button:disabled {
 .back {
 
     margin-bottom: 10px;
+
+}
+
+
+/* =========================================================
+   ADMIN
+   ========================================================= */
+
+.admin-header {
+
+    background: #eeeeee;
+
+    border: 1px solid #cccccc;
+
+    padding: 14px;
+
+    font-size: 20px;
+
+    font-weight: 700;
+
+}
+
+.admin-stat {
+
+    border: 1px solid #dddddd;
+
+    padding: 15px;
+
+    margin-top: 8px;
+
+    text-align: center;
+
+}
+
+.admin-stat-number {
+
+    font-size: 28px;
+
+    font-weight: 700;
+
+}
+
+.admin-stat-label {
+
+    margin-top: 4px;
+
+    font-size: 13px;
+
+    color: #666666;
+
+}
+
+.history-item {
+
+    border: 1px solid #dddddd;
+
+    padding: 10px;
+
+    margin-top: 6px;
+
+    font-size: 13px;
+
+}
+
+.history-action {
+
+    font-weight: 700;
+
+}
+
+.history-date {
+
+    color: #666666;
+
+    margin-top: 3px;
 
 }
 
@@ -760,8 +894,6 @@ input {
 
 
 
-    <!-- UŻYTKOWNIK -->
-
     <div class="user-bar">
 
 
@@ -789,8 +921,6 @@ input {
 
 
 
-    <!-- ADRES -->
-
     <div class="label">
 
         AKTUALNY ADRES
@@ -809,13 +939,25 @@ input {
 
 
 
-    <!-- APARAT -->
-
-    <div id="reader"></div>
+    <div class="scanner-panel">
 
 
+        <div id="reader"></div>
 
-    <!-- OSTATNI KOD -->
+
+        <div
+            id="scannerStatus"
+            class="scanner-status"
+        >
+
+            APARAT PRACUJE
+
+        </div>
+
+
+    </div>
+
+
 
     <div
         class="last"
@@ -832,7 +974,17 @@ input {
         id="scanBtn"
     >
 
-        SKANUJ KOD
+        📷 SKANUJ KOD
+
+    </button>
+
+
+    <button
+        id="stopScanBtn"
+        class="stop-button hidden"
+    >
+
+        ■ ZATRZYMAJ APARAT
 
     </button>
 
@@ -841,7 +993,7 @@ input {
         id="addressBtn"
     >
 
-        DAJ ADRES
+        📍 DAJ ADRES
 
     </button>
 
@@ -850,7 +1002,7 @@ input {
         id="previewBtn"
     >
 
-        PODGLĄD
+        👁 PODGLĄD
 
     </button>
 
@@ -859,7 +1011,7 @@ input {
         id="searchBtn"
     >
 
-        SZUKAJ
+        🔎 SZUKAJ
 
     </button>
 
@@ -868,7 +1020,17 @@ input {
         id="googleBtn"
     >
 
-        ⚙️ GOOGLE
+        ☁️ GOOGLE
+
+    </button>
+
+
+    <button
+        id="adminBtn"
+        class="admin-button hidden"
+    >
+
+        ⚙️ PANEL ADMINA
 
     </button>
 
@@ -1004,7 +1166,7 @@ input {
 
     <div class="title">
 
-        ⚙️ GOOGLE
+        ☁️ GOOGLE
 
     </div>
 
@@ -1034,7 +1196,7 @@ input {
             onclick="backupData()"
         >
 
-            ☁️ UTWÓRZ KOPIĘ JSON
+            💾 UTWÓRZ KOPIĘ JSON
 
         </button>
 
@@ -1050,6 +1212,152 @@ input {
 
 
     </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     PANEL ADMINA
+     ===================================================== -->
+
+<div
+    id="adminView"
+    class="hidden"
+>
+
+
+    <button
+        class="back"
+        onclick="showMain()"
+    >
+
+        ← POWRÓT DO SKANERA
+
+    </button>
+
+
+    <div class="admin-header">
+
+        ⚙️ PANEL ADMINA
+
+    </div>
+
+
+    <div
+        class="card"
+        id="adminUserInfo"
+    >
+
+        -
+
+    </div>
+
+
+    <div class="section">
+
+
+        <div class="admin-stat">
+
+            <div
+                class="admin-stat-number"
+                id="statScans"
+            >
+
+                0
+
+            </div>
+
+            <div class="admin-stat-label">
+
+                AKTYWNE SKANY
+
+            </div>
+
+        </div>
+
+
+        <div class="admin-stat">
+
+            <div
+                class="admin-stat-number"
+                id="statAddresses"
+            >
+
+                0
+
+            </div>
+
+            <div class="admin-stat-label">
+
+                RÓŻNE ADRESY
+
+            </div>
+
+        </div>
+
+
+        <div class="admin-stat">
+
+            <div
+                class="admin-stat-number"
+                id="statPending"
+            >
+
+                0
+
+            </div>
+
+            <div class="admin-stat-label">
+
+                BEZ ADRESU
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <div class="section">
+
+
+        <button
+            onclick="loadAdminHistory()"
+        >
+
+            📋 HISTORIA OPERACJI
+
+        </button>
+
+
+        <button
+            onclick="loadAdminUsers()"
+        >
+
+            👥 UŻYTKOWNICY
+
+        </button>
+
+
+        <button
+            onclick="backupData()"
+        >
+
+            💾 UTWÓRZ BACKUP
+
+        </button>
+
+
+    </div>
+
+
+    <div
+        id="adminContent"
+        class="section"
+    ></div>
+
 
 </div>
 
@@ -1096,9 +1404,8 @@ input {
 
 <script>
 
-
 /* =========================================================
-   GOOGLE APPS SCRIPT
+   KONFIGURACJA API
    ========================================================= */
 
 const API_URL =
@@ -1116,11 +1423,13 @@ let scanner = null;
 
 let cameraRunning = false;
 
-let takingDoubleScan = false;
+let acceptingScan = false;
 
-let firstCode = null;
+let processingScan = false;
 
-let firstDetectionTime = 0;
+let lastDetectedCode = '';
+
+let lastDetectedTime = 0;
 
 let currentAddress = null;
 
@@ -1129,7 +1438,7 @@ let currentUser = null;
 
 
 /* =========================================================
-   ELEMENTY
+   SKRÓT
    ========================================================= */
 
 const $ = id =>
@@ -1244,8 +1553,30 @@ function api(
                 };
 
 
+            const timer =
+                setTimeout(
+                    () => {
+
+                        cleanup();
+
+                        reject(
+                            new Error(
+                                'Przekroczono czas odpowiedzi serwera.'
+                            )
+                        );
+
+                    },
+                    15000
+                );
+
+
             window[callback] =
                 data => {
+
+                    clearTimeout(
+                        timer
+                    );
+
 
                     cleanup();
 
@@ -1277,6 +1608,11 @@ function api(
             script.onerror =
                 () => {
 
+                    clearTimeout(
+                        timer
+                    );
+
+
                     cleanup();
 
 
@@ -1299,7 +1635,6 @@ function api(
                 script
             );
 
-
         }
     );
 
@@ -1308,7 +1643,7 @@ function api(
 
 
 /* =========================================================
-   SESJA — PAMIĘĆ
+   SESJA
    ========================================================= */
 
 function getToken() {
@@ -1332,6 +1667,23 @@ function getLogin() {
 function getRole() {
 
     return sessionStorage.getItem(
+        'wms_role'
+    );
+
+}
+
+
+function clearSession() {
+
+    sessionStorage.removeItem(
+        'wms_token'
+    );
+
+    sessionStorage.removeItem(
+        'wms_login'
+    );
+
+    sessionStorage.removeItem(
         'wms_role'
     );
 
@@ -1453,6 +1805,11 @@ async function performLogin() {
                 result.token
 
         };
+
+
+        $('passwordInput')
+            .value =
+            '';
 
 
         showLoggedIn();
@@ -1581,9 +1938,12 @@ function showLogin() {
 
 
     [
+
         'previewView',
         'searchView',
-        'googleView'
+        'googleView',
+        'adminView'
+
     ].forEach(
         id => {
 
@@ -1597,8 +1957,25 @@ function showLogin() {
     );
 
 
-    $('loginInput')
-        .focus();
+    $('loginButton')
+        .disabled =
+        false;
+
+
+    $('loginButton')
+        .textContent =
+        'ZALOGUJ';
+
+
+    setTimeout(
+        () => {
+
+            $('loginInput')
+                .focus();
+
+        },
+        100
+    );
 
 }
 
@@ -1634,34 +2011,36 @@ async function showLoggedIn() {
         ']';
 
 
-    /*
-     * OPERATOR nie dostaje przycisku
-     * backupu.
-     */
-
     if (
-        currentUser.role !==
+        currentUser.role ===
         'ADMIN'
     ) {
 
-        $('backupButton')
-            .style
-            .display =
-            'none';
-
-    } else {
+        $('adminBtn')
+            .classList
+            .remove(
+                'hidden'
+            );
 
         $('backupButton')
             .style
             .display =
             'block';
 
+    } else {
+
+        $('adminBtn')
+            .classList
+            .add(
+                'hidden'
+            );
+
+        $('backupButton')
+            .style
+            .display =
+            'none';
+
     }
-
-
-    setMessage(
-        'Pobieranie danych...'
-    );
 
 
     await loadData();
@@ -1705,9 +2084,11 @@ async function logout() {
 
     scans = [];
 
-    currentAddress = null;
+    currentAddress =
+        null;
 
-    currentUser = null;
+    currentUser =
+        null;
 
 
     $('counter')
@@ -1726,28 +2107,6 @@ async function logout() {
 
 
     showLogin();
-
-}
-
-
-
-/* =========================================================
-   CZYSZCZENIE SESJI
-   ========================================================= */
-
-function clearSession() {
-
-    sessionStorage.removeItem(
-        'wms_token'
-    );
-
-    sessionStorage.removeItem(
-        'wms_login'
-    );
-
-    sessionStorage.removeItem(
-        'wms_role'
-    );
 
 }
 
@@ -1785,11 +2144,6 @@ function formatAddress(
 
 }
 
-
-
-/* =========================================================
-   WALIDACJA ADRESU
-   ========================================================= */
 
 function validAddress(
     address
@@ -1842,45 +2196,7 @@ function validAddress(
 
 
 /* =========================================================
-   KOMUNIKAT
-   ========================================================= */
-
-function setMessage(
-    text
-) {
-
-    $('message')
-        .textContent =
-        text;
-
-}
-
-
-
-/* =========================================================
-   LICZNIK
-   ========================================================= */
-
-function updateCounter() {
-
-
-    scans =
-        scans.filter(
-            scan =>
-                !scan.deleted
-        );
-
-
-    $('counter')
-        .textContent =
-        scans.length;
-
-}
-
-
-
-/* =========================================================
-   POBRANIE DANYCH
+   DANE
    ========================================================= */
 
 async function loadData() {
@@ -1939,10 +2255,9 @@ async function loadData() {
 
 
         if (
-            error.message
-                .includes(
-                    'SESJA'
-                )
+            isSessionError(
+                error
+            )
         ) {
 
             clearSession();
@@ -1966,7 +2281,137 @@ async function loadData() {
 
 
 /* =========================================================
-   APARAT
+   LICZNIK
+   ========================================================= */
+
+function updateCounter() {
+
+
+    scans =
+        scans.filter(
+            scan =>
+                !scan.deleted
+        );
+
+
+    $('counter')
+        .textContent =
+        scans.length;
+
+}
+
+
+
+/* =========================================================
+   DŹWIĘK
+   ========================================================= */
+
+function beep() {
+
+
+    try {
+
+
+        const AudioContext =
+            window.AudioContext ||
+            window.webkitAudioContext;
+
+
+        if (
+            !AudioContext
+        ) {
+
+            return;
+
+        }
+
+
+        const context =
+            new AudioContext();
+
+
+        const oscillator =
+            context.createOscillator();
+
+
+        const gain =
+            context.createGain();
+
+
+        oscillator.type =
+            'sine';
+
+
+        oscillator.frequency.value =
+            880;
+
+
+        gain.gain.value =
+            0.08;
+
+
+        oscillator.connect(
+            gain
+        );
+
+
+        gain.connect(
+            context.destination
+        );
+
+
+        oscillator.start();
+
+
+        setTimeout(
+            () => {
+
+                oscillator.stop();
+
+                context.close();
+
+            },
+            120
+        );
+
+
+    } catch (_) {}
+
+}
+
+
+
+/* =========================================================
+   WIBRACJA
+   ========================================================= */
+
+function vibrateSuccess() {
+
+
+    try {
+
+        if (
+            navigator.vibrate
+        ) {
+
+            navigator.vibrate(
+                [
+                    80,
+                    50,
+                    120
+                ]
+            );
+
+        }
+
+    } catch (_) {}
+
+}
+
+
+
+/* =========================================================
+   SKANER — START
    ========================================================= */
 
 async function startScanner() {
@@ -1987,17 +2432,33 @@ async function startScanner() {
         cameraRunning
     ) {
 
-        beginDoubleCapture();
-
         return;
 
     }
+
+
+    $('scanBtn')
+        .disabled =
+        true;
 
 
     $('reader')
         .style
         .display =
         'block';
+
+
+    $('scannerStatus')
+        .style
+        .display =
+        'block';
+
+
+    $('stopScanBtn')
+        .classList
+        .remove(
+            'hidden'
+        );
 
 
     setMessage(
@@ -2026,22 +2487,35 @@ async function startScanner() {
             );
 
 
+        /*
+         * Najpierw próbujemy tylnej
+         * kamery.
+         */
+
+        let cameraConfig = {
+
+            facingMode:
+                {
+                    ideal:
+                        'environment'
+                }
+
+        };
+
+
         await scanner.start(
 
-            {
-                facingMode:
-                    'environment'
-            },
+            cameraConfig,
 
             {
 
-                fps: 10,
+                fps: 12,
 
                 qrbox: {
 
-                    width: 280,
+                    width: 300,
 
-                    height: 180
+                    height: 190
 
                 },
 
@@ -2050,10 +2524,13 @@ async function startScanner() {
 
             },
 
-            decoded =>
+            decodedText => {
+
                 handleDetectedCode(
-                    decoded
-                ),
+                    decodedText
+                );
+
+            },
 
             () => {}
 
@@ -2063,16 +2540,30 @@ async function startScanner() {
         cameraRunning =
             true;
 
+        acceptingScan =
+            true;
+
+        processingScan =
+            false;
+
+        lastDetectedCode =
+            '';
+
+        lastDetectedTime =
+            0;
+
 
         setMessage(
-            'Gotowy'
+            'SKANUJ KOD'
         );
 
 
-        beginDoubleCapture();
-
-
     } catch (error) {
+
+
+        console.error(
+            error
+        );
 
 
         stopScanner();
@@ -2095,53 +2586,23 @@ async function startScanner() {
 
 
 /* =========================================================
-   PODWÓJNY ODCZYT
-   ========================================================= */
-
-function beginDoubleCapture() {
-
-
-    if (
-        takingDoubleScan
-    ) {
-
-        return;
-
-    }
-
-
-    firstCode =
-        null;
-
-
-    firstDetectionTime =
-        0;
-
-
-    takingDoubleScan =
-        true;
-
-
-    $('scanBtn')
-        .disabled =
-        true;
-
-
-    setMessage(
-        'Skanowanie...'
-    );
-
-}
-
-
-
-/* =========================================================
-   ODCZYT KODU
+   SKANER — ODCZYT
    ========================================================= */
 
 function handleDetectedCode(
     code
 ) {
+
+
+    if (
+        !cameraRunning ||
+        !acceptingScan ||
+        processingScan
+    ) {
+
+        return;
+
+    }
 
 
     code =
@@ -2150,9 +2611,31 @@ function handleDetectedCode(
         ).trim();
 
 
+    if (!code) {
+
+        return;
+
+    }
+
+
+    const now =
+        Date.now();
+
+
+    /*
+     * Ten sam kod wykryty ponownie
+     * w ciągu 1200 ms ignorujemy.
+     */
+
     if (
-        !takingDoubleScan ||
-        !code
+
+        code ===
+        lastDetectedCode &&
+
+        now -
+        lastDetectedTime <
+        1200
+
     ) {
 
         return;
@@ -2160,80 +2643,43 @@ function handleDetectedCode(
     }
 
 
-    if (
-        firstCode === null
-    ) {
-
-        firstCode =
-            code;
-
-
-        firstDetectionTime =
-            Date.now();
-
-
-        return;
-
-    }
-
-
-    if (
-        Date.now() -
-        firstDetectionTime <
-        150
-    ) {
-
-        return;
-
-    }
-
-
-    const second =
+    lastDetectedCode =
         code;
 
 
-    takingDoubleScan =
+    lastDetectedTime =
+        now;
+
+
+    /*
+     * Wstrzymujemy przyjmowanie
+     * kolejnych odczytów na czas
+     * zapisu.
+     */
+
+    acceptingScan =
         false;
 
 
-    if (
-        firstCode ===
-        second
-    ) {
-
-        processAcceptedCode(
-            firstCode
-        );
-
-    } else {
+    processingScan =
+        true;
 
 
-        $('lastCode')
-            .textContent =
-            'Kod nie został zapisany';
+    beep();
+
+    vibrateSuccess();
 
 
-        setMessage(
-            'ROZBIEŻNOŚĆ — PONÓW SKAN'
-        );
-
-
-        firstCode =
-            null;
-
-
-        $('scanBtn')
-            .disabled =
-            false;
-
-    }
+    processAcceptedCode(
+        code
+    );
 
 }
 
 
 
 /* =========================================================
-   ZAPIS SKANU
+   SKANER — ZAPIS
    ========================================================= */
 
 async function processAcceptedCode(
@@ -2241,9 +2687,20 @@ async function processAcceptedCode(
 ) {
 
 
-    firstCode =
-        null;
+    $('lastCode')
+        .textContent =
+        'Odczytano: ' +
+        code;
 
+
+    setMessage(
+        'Zapisywanie...'
+    );
+
+
+    /*
+     * Sprawdzenie lokalne.
+     */
 
     if (
         scans.some(
@@ -2256,7 +2713,7 @@ async function processAcceptedCode(
 
         $('lastCode')
             .textContent =
-            'Nie zapisano: ' +
+            'Kod już istnieje: ' +
             code;
 
 
@@ -2265,9 +2722,12 @@ async function processAcceptedCode(
         );
 
 
-        $('scanBtn')
-            .disabled =
+        processingScan =
             false;
+
+
+        acceptingScan =
+            true;
 
 
         return;
@@ -2332,21 +2792,18 @@ async function processAcceptedCode(
 
 
         if (
+            !result ||
             !result.ok
         ) {
 
-            setMessage(
-                result.message ||
-                'BŁĄD ZAPISU'
+            throw new Error(
+                result &&
+                result.message
+                    ?
+                    result.message
+                    :
+                    'Błąd zapisu.'
             );
-
-
-            $('scanBtn')
-                .disabled =
-                false;
-
-
-            return;
 
         }
 
@@ -2361,12 +2818,12 @@ async function processAcceptedCode(
 
         $('lastCode')
             .textContent =
-            'Ostatni skan: ' +
+            '✓ Ostatni skan: ' +
             code;
 
 
         setMessage(
-            'OK — OCZEKUJE NA ADRES'
+            'ZAPISANO'
         );
 
 
@@ -2374,10 +2831,9 @@ async function processAcceptedCode(
 
 
         if (
-            error.message
-                .includes(
-                    'SESJA'
-                )
+            isSessionError(
+                error
+            )
         ) {
 
             clearSession();
@@ -2397,22 +2853,35 @@ async function processAcceptedCode(
     }
 
 
-    $('scanBtn')
-        .disabled =
+    processingScan =
         false;
+
+
+    acceptingScan =
+        true;
 
 }
 
 
 
 /* =========================================================
-   ZATRZYMANIE APARATU
+   SKANER — STOP
    ========================================================= */
 
 function stopScanner() {
 
 
-    if (scanner) {
+    acceptingScan =
+        false;
+
+
+    processingScan =
+        false;
+
+
+    if (
+        scanner
+    ) {
 
 
         scanner
@@ -2423,16 +2892,18 @@ function stopScanner() {
             .finally(
                 () => {
 
-                    $('reader')
-                        .style
-                        .display =
-                        'none';
+                    try {
 
-                    cameraRunning =
-                        false;
+                        scanner.clear();
+
+                    } catch (_) {}
+
 
                     scanner =
                         null;
+
+
+                    finishScannerStop();
 
                 }
             );
@@ -2440,38 +2911,7 @@ function stopScanner() {
 
     } else {
 
-
-        $('reader')
-            .style
-            .display =
-            'none';
-
-
-        cameraRunning =
-            false;
-
-    }
-
-
-    takingDoubleScan =
-        false;
-
-
-    firstCode =
-        null;
-
-
-    firstDetectionTime =
-        0;
-
-
-    if (
-        $('scanBtn')
-    ) {
-
-        $('scanBtn')
-            .disabled =
-            false;
+        finishScannerStop();
 
     }
 
@@ -2480,7 +2920,50 @@ function stopScanner() {
 
 
 /* =========================================================
-   ADRES — OKNO
+   KONIEC STOP
+   ========================================================= */
+
+function finishScannerStop() {
+
+
+    cameraRunning =
+        false;
+
+
+    $('reader')
+        .style
+        .display =
+        'none';
+
+
+    $('scannerStatus')
+        .style
+        .display =
+        'none';
+
+
+    $('stopScanBtn')
+        .classList
+        .add(
+            'hidden'
+        );
+
+
+    $('scanBtn')
+        .disabled =
+        false;
+
+
+    setMessage(
+        'Aparat zatrzymany'
+    );
+
+}
+
+
+
+/* =========================================================
+   ADRES
    ========================================================= */
 
 function showAddressDialog() {
@@ -2630,9 +3113,7 @@ async function assignAddressFromDialog() {
 
 
         setMessage(
-            '✓ ' +
-            result.count +
-            ' kodów zapisano w Google'
+            '✓ Zapisano w Google'
         );
 
 
@@ -2643,10 +3124,9 @@ async function assignAddressFromDialog() {
 
 
         if (
-            error.message
-                .includes(
-                    'SESJA'
-                )
+            isSessionError(
+                error
+            )
         ) {
 
             clearSession();
@@ -2673,6 +3153,9 @@ async function assignAddressFromDialog() {
    ========================================================= */
 
 function showPreview() {
+
+
+    stopScanner();
 
 
     hideAll();
@@ -2847,46 +3330,43 @@ function showPreview() {
                             );
 
 
-                    const remove =
-                        document.createElement(
-                            'button'
-                        );
+                    buttons.append(
+                        edit
+                    );
 
-
-                    remove.textContent =
-                        'USUŃ';
-
-
-                    remove.className =
-                        'danger';
-
-
-                    /*
-                     * Tylko ADMIN może usuwać.
-                     */
 
                     if (
-                        getRole() !==
+                        getRole() ===
                         'ADMIN'
                     ) {
 
-                        remove.style.display =
-                            'none';
 
-                    }
-
-
-                    remove.onclick =
-                        () =>
-                            deleteScanConfirm(
-                                scan
+                        const remove =
+                            document.createElement(
+                                'button'
                             );
 
 
-                    buttons.append(
-                        edit,
-                        remove
-                    );
+                        remove.textContent =
+                            'USUŃ';
+
+
+                        remove.className =
+                            'danger';
+
+
+                        remove.onclick =
+                            () =>
+                                deleteScanConfirm(
+                                    scan
+                                );
+
+
+                        buttons.append(
+                            remove
+                        );
+
+                    }
 
 
                     card.append(
@@ -3040,16 +3520,14 @@ async function saveEdit(
 
 
         if (
+            !result ||
             !result.ok
         ) {
 
-            alert(
+            throw new Error(
                 result.message ||
                 'Nie udało się zapisać.'
             );
-
-
-            return;
 
         }
 
@@ -3075,7 +3553,9 @@ async function saveEdit(
 
         closeDialog();
 
+
         showPreview();
+
 
         setMessage(
             'Zapisano zmianę.'
@@ -3086,10 +3566,9 @@ async function saveEdit(
 
 
         if (
-            error.message
-                .includes(
-                    'SESJA'
-                )
+            isSessionError(
+                error
+            )
         ) {
 
             clearSession();
@@ -3169,7 +3648,7 @@ function deleteScanConfirm(
 
 
 /* =========================================================
-   WYKONANIE USUNIĘCIA
+   USUNIĘCIE
    ========================================================= */
 
 async function performDelete(
@@ -3210,7 +3689,9 @@ async function performDelete(
 
         closeDialog();
 
+
         showPreview();
+
 
         setMessage(
             'Usunięto skan.'
@@ -3221,10 +3702,9 @@ async function performDelete(
 
 
         if (
-            error.message
-                .includes(
-                    'SESJA'
-                )
+            isSessionError(
+                error
+            )
         ) {
 
             clearSession();
@@ -3253,6 +3733,9 @@ async function performDelete(
 function showSearch() {
 
 
+    stopScanner();
+
+
     hideAll();
 
 
@@ -3270,10 +3753,6 @@ function showSearch() {
 
 
 
-/* =========================================================
-   WYKONANIE SZUKANIA
-   ========================================================= */
-
 function runSearch() {
 
 
@@ -3287,7 +3766,7 @@ function runSearch() {
 
         $('searchResult')
             .textContent =
-            'Wpisz fragment kodu i kliknij SZUKAJ.';
+            'Wpisz fragment kodu.';
 
 
         return;
@@ -3312,9 +3791,7 @@ function runSearch() {
 
         $('searchResult')
             .textContent =
-            'BRAK WYNIKU\n\n' +
-            'Szukany fragment:\n' +
-            query;
+            'BRAK WYNIKU';
 
 
         return;
@@ -3393,6 +3870,9 @@ function runSearch() {
 function showGoogle() {
 
 
+    stopScanner();
+
+
     hideAll();
 
 
@@ -3405,10 +3885,6 @@ function showGoogle() {
 }
 
 
-
-/* =========================================================
-   PONOWNE POBRANIE
-   ========================================================= */
 
 async function reloadData() {
 
@@ -3475,7 +3951,7 @@ async function backupData() {
 
         $('googleStatus')
             .textContent =
-            'Utworzono: ' +
+            '✓ Utworzono: ' +
             result.name;
 
 
@@ -3494,6 +3970,328 @@ async function backupData() {
 
 
 /* =========================================================
+   PANEL ADMINA
+   ========================================================= */
+
+function showAdmin() {
+
+
+    if (
+        getRole() !==
+        'ADMIN'
+    ) {
+
+        alert(
+            'Brak uprawnień.'
+        );
+
+
+        return;
+
+    }
+
+
+    stopScanner();
+
+
+    hideAll();
+
+
+    $('adminView')
+        .classList
+        .remove(
+            'hidden'
+        );
+
+
+    $('adminUserInfo')
+        .textContent =
+        'Zalogowany: ' +
+        getLogin() +
+        ' [ADMIN]';
+
+
+    updateAdminStats();
+
+
+    $('adminContent')
+        .innerHTML =
+        '<div class="card">' +
+        'Wybierz funkcję administratora powyżej.' +
+        '</div>';
+
+}
+
+
+
+/* =========================================================
+   STATYSTYKI ADMINA
+   ========================================================= */
+
+function updateAdminStats() {
+
+
+    const active =
+        scans.filter(
+            scan =>
+                !scan.deleted
+        );
+
+
+    const addresses =
+        new Set(
+            active
+                .filter(
+                    scan =>
+                        scan.address
+                )
+                .map(
+                    scan =>
+                        scan.address
+                )
+        );
+
+
+    const pending =
+        active.filter(
+            scan =>
+                !scan.address
+        );
+
+
+    $('statScans')
+        .textContent =
+        active.length;
+
+
+    $('statAddresses')
+        .textContent =
+        addresses.size;
+
+
+    $('statPending')
+        .textContent =
+        pending.length;
+
+}
+
+
+
+/* =========================================================
+   HISTORIA ADMINA
+   ========================================================= */
+
+async function loadAdminHistory() {
+
+
+    if (
+        getRole() !==
+        'ADMIN'
+    ) {
+
+        return;
+
+    }
+
+
+    $('adminContent')
+        .innerHTML =
+        '<div class="card">Pobieranie historii...</div>';
+
+
+    try {
+
+
+        const result =
+            await api(
+
+                'getHistory',
+
+                {
+
+                    token:
+                        getToken()
+
+                }
+
+            );
+
+
+        const history =
+            result.history || [];
+
+
+        if (
+            !history.length
+        ) {
+
+            $('adminContent')
+                .innerHTML =
+                '<div class="card">' +
+                'BRAK HISTORII' +
+                '</div>';
+
+
+            return;
+
+        }
+
+
+        let html =
+            '<div class="card-head">' +
+            'HISTORIA — ' +
+            history.length +
+            ' wpisów' +
+            '</div>';
+
+
+        history.forEach(
+            item => {
+
+
+                html +=
+
+                    '<div class="history-item">' +
+
+                    '<div class="history-action">' +
+
+                    escapeHtml(
+                        item.action
+                    ) +
+
+                    ' — ' +
+
+                    escapeHtml(
+                        item.login
+                    ) +
+
+                    '</div>' +
+
+                    '<div>' +
+
+                    (
+                        item.code
+                            ?
+                            'Kod: ' +
+                            escapeHtml(
+                                item.code
+                            )
+                            :
+                            ''
+                    ) +
+
+                    '</div>' +
+
+                    '<div>' +
+
+                    (
+                        item.address
+                            ?
+                            'Adres: ' +
+                            escapeHtml(
+                                formatAddress(
+                                    item.address
+                                )
+                            )
+                            :
+                            ''
+                    ) +
+
+                    '</div>' +
+
+                    '<div class="history-date">' +
+
+                    escapeHtml(
+                        item.date
+                    ) +
+
+                    '</div>' +
+
+                    '</div>';
+
+            }
+        );
+
+
+        $('adminContent')
+            .innerHTML =
+            html;
+
+
+    } catch (error) {
+
+
+        if (
+            isSessionError(
+                error
+            )
+        ) {
+
+            clearSession();
+
+            showLogin();
+
+            return;
+
+        }
+
+
+        $('adminContent')
+            .innerHTML =
+            '<div class="card">' +
+            'BŁĄD: ' +
+            escapeHtml(
+                error.message
+            ) +
+            '</div>';
+
+    }
+
+}
+
+
+
+/* =========================================================
+   UŻYTKOWNICY
+   ========================================================= */
+
+async function loadAdminUsers() {
+
+
+    if (
+        getRole() !==
+        'ADMIN'
+    ) {
+
+        return;
+
+    }
+
+
+    $('adminContent')
+        .innerHTML =
+        '<div class="card">' +
+        'Informacje o użytkownikach są dostępne po stronie administratora.' +
+        '</div>';
+
+
+    /*
+     * Obecny Code.gs nie posiada jeszcze
+     * osobnej operacji getUsers.
+     *
+     * Nie udajemy więc, że użytkownicy
+     * są już dostępni z panelu.
+     *
+     * Dodamy tę funkcję w kolejnym
+     * etapie razem z tworzeniem/edycją
+     * kont.
+     */
+
+}
+
+
+
+/* =========================================================
    NAWIGACJA
    ========================================================= */
 
@@ -3505,7 +4303,8 @@ function hideAll() {
         'mainView',
         'previewView',
         'searchView',
-        'googleView'
+        'googleView',
+        'adminView'
 
     ].forEach(
         id => {
@@ -3523,10 +4322,6 @@ function hideAll() {
 
 
 
-/* =========================================================
-   POWRÓT DO GŁÓWNEGO
-   ========================================================= */
-
 function showMain() {
 
 
@@ -3538,6 +4333,9 @@ function showMain() {
         .remove(
             'hidden'
         );
+
+
+    updateCounter();
 
 }
 
@@ -3608,10 +4406,6 @@ function openDialog(
 
 
 
-/* =========================================================
-   ZAMKNIĘCIE MODALA
-   ========================================================= */
-
 function closeDialog() {
 
 
@@ -3620,6 +4414,36 @@ function closeDialog() {
         .add(
             'hidden'
         );
+
+}
+
+
+
+/* =========================================================
+   SESJA — BŁĄD
+   ========================================================= */
+
+function isSessionError(
+    error
+) {
+
+
+    const message =
+        error &&
+        error.message
+            ?
+            error.message
+            :
+            '';
+
+
+    return (
+        message
+            .toUpperCase()
+            .includes(
+                'SESJA'
+            )
+    );
 
 }
 
@@ -3686,6 +4510,11 @@ $('scanBtn')
     startScanner;
 
 
+$('stopScanBtn')
+    .onclick =
+    stopScanner;
+
+
 $('addressBtn')
     .onclick =
     showAddressDialog;
@@ -3704,6 +4533,11 @@ $('searchBtn')
 $('googleBtn')
     .onclick =
     showGoogle;
+
+
+$('adminBtn')
+    .onclick =
+    showAdmin;
 
 
 
@@ -3750,7 +4584,30 @@ $('passwordInput')
 
 
 /* =========================================================
-   START APLIKACJI
+   ENTER — SZUKANIE
+   ========================================================= */
+
+$('searchInput')
+    .addEventListener(
+        'keydown',
+        event => {
+
+            if (
+                event.key ===
+                'Enter'
+            ) {
+
+                runSearch();
+
+            }
+
+        }
+    );
+
+
+
+/* =========================================================
+   START
    ========================================================= */
 
 window.addEventListener(
@@ -3765,7 +4622,11 @@ window.addEventListener(
 
 window.addEventListener(
     'beforeunload',
-    stopScanner
+    () => {
+
+        stopScanner();
+
+    }
 );
 
 </script>
