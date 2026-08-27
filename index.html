@@ -1,1031 +1,687 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#ffffff">
-<title>PODGLĄD WMS</title>
 
-<style>
-*{box-sizing:border-box}
+    <meta charset="UTF-8">
 
-html,body{
-    margin:0;
-    padding:0;
-    min-height:100%;
-    font-family:Arial,Helvetica,sans-serif;
-    background:#fff;
-    color:#111;
-}
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-body{padding:16px}
+    <title>Podgląd WMS</title>
 
-.app{
-    width:100%;
-    max-width:720px;
-    margin:0 auto;
-}
+    <style>
 
-.hidden{display:none!important}
+        * {
+            box-sizing: border-box;
+        }
 
-.login-wrap{
-    min-height:calc(100vh - 32px);
-    display:flex;
-    align-items:center;
-    justify-content:center;
-}
+        body {
 
-.login-box{
-    width:100%;
-    max-width:420px;
-    border:1px solid #ddd;
-    border-radius:10px;
-    padding:28px;
-    box-shadow:0 4px 20px rgba(0,0,0,.08);
-}
+            margin: 0;
+            padding: 20px;
 
-.logo{
-    text-align:center;
-    font-size:30px;
-    font-weight:700;
-    margin-bottom:6px;
-}
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
 
-.subtitle{
-    text-align:center;
-    color:#666;
-    font-size:14px;
-    margin-bottom:24px;
-}
+            background: #f5f5f5;
+            color: #111;
+        }
 
-label{
-    display:block;
-    font-size:13px;
-    font-weight:700;
-    margin:14px 0 6px;
-}
 
-input{
-    width:100%;
-    min-height:52px;
-    padding:10px 12px;
-    border:1px solid #aaa;
-    border-radius:5px;
-    font-size:18px;
-    outline:none;
-}
+        .container {
 
-input:focus{border-color:#333}
+            width: 100%;
+            max-width: 700px;
 
-button{
-    width:100%;
-    min-height:52px;
-    margin-top:9px;
-    border:1px solid #bbb;
-    border-radius:5px;
-    background:#eee;
-    color:#111;
-    font-size:16px;
-    font-weight:700;
-    cursor:pointer;
-}
+            margin: 0 auto;
+        }
 
-button:active{transform:scale(.99)}
-button:disabled{opacity:.55}
 
-.login-button{
-    background:#111;
-    color:#fff;
-    border-color:#111;
-    margin-top:20px;
-}
+        .card {
 
-.message{
-    min-height:22px;
-    margin-top:12px;
-    text-align:center;
-    font-size:14px;
-    font-weight:600;
-}
+            background: white;
 
-.top{
-    display:flex;
-    align-items:center;
-    gap:10px;
-}
+            border: 1px solid #ddd;
 
-.title{
-    flex:1;
-    font-size:25px;
-    font-weight:700;
-}
+            border-radius: 10px;
 
-.counter{
-    background:#000;
-    color:#fff;
-    min-width:48px;
-    padding:9px 12px;
-    text-align:center;
-    font-size:18px;
-    font-weight:700;
-}
+            padding: 20px;
 
-.user-bar{
-    margin-top:9px;
-    padding:9px 10px;
-    background:#f1f1f1;
-    display:flex;
-    align-items:center;
-    gap:8px;
-    font-size:13px;
-}
+            margin-bottom: 15px;
+        }
 
-.user-name{
-    flex:1;
-    font-weight:700;
-}
 
-.logout{
-    width:auto;
-    min-height:36px;
-    margin:0;
-    padding:6px 12px;
-    font-size:12px;
-}
+        h1 {
 
-.main-button{
-    margin-top:12px;
-    min-height:58px;
-}
+            margin: 0 0 5px;
 
-.admin-button{
-    background:#e9e9e9;
-    border-color:#555;
-}
+            font-size: 26px;
+        }
 
-.section{
-    margin-top:14px;
-}
 
-.search-box{
-    padding:14px;
-    border:1px solid #ddd;
-}
+        .subtitle {
 
-.search-button{
-    background:#111;
-    color:#fff;
-    border-color:#111;
-}
+            color: #777;
 
-.result-info{
-    margin:14px 0 7px;
-    font-size:14px;
-    font-weight:700;
-}
+            font-size: 14px;
 
-.result-row{
-    border:1px solid #ddd;
-    margin-top:8px;
-    padding:13px;
-    background:#fff;
-}
+            margin-bottom: 20px;
+        }
 
-.result-code{
-    font-size:19px;
-    font-weight:700;
-    word-break:break-all;
-}
 
-.result-address{
-    margin-top:8px;
-    padding-top:8px;
-    border-top:1px solid #eee;
-    font-size:18px;
-    font-weight:700;
-}
+        label {
 
-.empty{
-    border:1px solid #ddd;
-    padding:16px;
-    margin-top:10px;
-    text-align:center;
-    color:#666;
-}
+            display: block;
 
-.back{
-    margin-bottom:12px;
-}
+            font-size: 13px;
 
-.admin-head{
-    padding:14px;
-    border:1px solid #ccc;
-    background:#eee;
-    font-size:20px;
-    font-weight:700;
-}
+            font-weight: bold;
 
-.admin-stat{
-    border:1px solid #ddd;
-    padding:15px;
-    margin-top:9px;
-    text-align:center;
-}
+            margin-bottom: 6px;
+        }
 
-.admin-number{
-    font-size:30px;
-    font-weight:700;
-}
 
-.admin-label{
-    margin-top:4px;
-    color:#666;
-    font-size:13px;
-}
+        input {
 
-.refresh{
-    margin-top:12px;
-}
+            width: 100%;
 
-@media(min-width:700px){
-    body{padding-top:28px}
-}
-</style>
+            height: 52px;
+
+            padding: 10px 14px;
+
+            border: 1px solid #aaa;
+
+            border-radius: 6px;
+
+            font-size: 20px;
+
+            outline: none;
+        }
+
+
+        input:focus {
+
+            border-color: #111;
+        }
+
+
+        button {
+
+            width: 100%;
+
+            height: 52px;
+
+            margin-top: 10px;
+
+            border: 0;
+
+            border-radius: 6px;
+
+            background: #111;
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: bold;
+
+            cursor: pointer;
+        }
+
+
+        button:active {
+
+            transform: scale(.99);
+        }
+
+
+        .message {
+
+            margin-top: 15px;
+
+            text-align: center;
+
+            font-size: 14px;
+
+            color: #666;
+        }
+
+
+        .result {
+
+            border: 1px solid #ddd;
+
+            border-radius: 7px;
+
+            padding: 15px;
+
+            margin-top: 10px;
+
+            background: #fff;
+        }
+
+
+        .code {
+
+            font-size: 20px;
+
+            font-weight: bold;
+
+            word-break: break-all;
+        }
+
+
+        .location {
+
+            margin-top: 8px;
+
+            font-size: 19px;
+
+            font-weight: bold;
+        }
+
+
+        .count {
+
+            margin-top: 15px;
+
+            font-size: 14px;
+
+            font-weight: bold;
+        }
+
+
+        .error {
+
+            color: #b00020;
+
+            font-weight: bold;
+        }
+
+
+        .loading {
+
+            text-align: center;
+
+            color: #666;
+
+            padding: 15px;
+        }
+
+    </style>
+
 </head>
 
+
 <body>
-<div class="app">
-
-<!-- LOGIN -->
-<div id="loginView" class="login-wrap">
-    <div class="login-box">
-        <div class="logo">🔐 WMS</div>
-        <div class="subtitle">Podgląd magazynu</div>
-
-        <label for="loginInput">LOGIN</label>
-        <input id="loginInput" type="text" autocomplete="username" placeholder="Wpisz login">
-
-        <label for="passwordInput">HASŁO</label>
-        <input id="passwordInput" type="password" autocomplete="current-password" placeholder="Wpisz hasło">
-
-        <button id="loginButton" class="login-button">ZALOGUJ</button>
-
-        <div id="loginMessage" class="message"></div>
-    </div>
-</div>
 
 
-<!-- MAIN -->
-<div id="mainView" class="hidden">
-
-    <div class="top">
-        <div class="title">PODGLĄD WMS</div>
-        <div id="counter" class="counter">0</div>
-    </div>
-
-    <div class="user-bar">
-        <div id="userInfo" class="user-name">-</div>
-        <button id="logoutButton" class="logout">WYLOGUJ</button>
-    </div>
-
-    <button id="searchBtn" class="main-button">🔎 SZUKAJ ETYKIETY</button>
-
-    <button id="listBtn" class="main-button">📦 PALETY W BAZIE</button>
-
-    <button id="adminBtn" class="main-button admin-button hidden">⚙️ PANEL ADMINA</button>
-
-    <div id="mainMessage" class="message">Gotowy</div>
-
-</div>
+<div class="container">
 
 
-<!-- SEARCH -->
-<div id="searchView" class="hidden">
+    <!-- ================================================
+         NAGŁÓWEK
+         ================================================ -->
 
-    <button class="back" onclick="showMain()">← POWRÓT</button>
+    <div class="card">
 
-    <div class="title">🔎 SZUKAJ ETYKIETY</div>
+        <h1>
+            📦 PODGLĄD WMS
+        </h1>
 
-    <div class="search-box section">
+        <div class="subtitle">
+            Tylko odczyt
+        </div>
+
+
+        <!-- ============================================
+             WYSZUKIWANIE
+             ============================================ -->
+
+        <label for="searchInput">
+            NUMER ETYKIETY
+        </label>
+
+
         <input
             id="searchInput"
             type="text"
             inputmode="numeric"
             autocomplete="off"
-            placeholder="Wpisz fragment numeru etykiety"
+            placeholder="np. 591"
         >
 
-        <button id="searchButton" class="search-button">SZUKAJ</button>
+
+        <button
+            id="searchButton"
+        >
+            🔎 SZUKAJ
+        </button>
+
+
+        <div
+            id="message"
+            class="message"
+        ></div>
+
     </div>
 
-    <div id="searchResult" class="section"></div>
+
+    <!-- ================================================
+         WYNIKI
+         ================================================ -->
+
+    <div
+        id="results"
+        class="card"
+    >
+
+        <div class="message">
+            Wpisz numer etykiety i kliknij SZUKAJ.
+        </div>
+
+    </div>
+
 
 </div>
 
 
-<!-- LIST -->
-<div id="listView" class="hidden">
-
-    <button class="back" onclick="showMain()">← POWRÓT</button>
-
-    <div class="title">📦 PALETY W BAZIE</div>
-
-    <div class="section">
-        <button id="refreshButton" class="refresh">↻ ODŚWIEŻ DANE</button>
-    </div>
-
-    <div id="listResult" class="section"></div>
-
-</div>
-
-
-<!-- ADMIN -->
-<div id="adminView" class="hidden">
-
-    <button class="back" onclick="showMain()">← POWRÓT</button>
-
-    <div class="admin-head">⚙️ PANEL ADMINA</div>
-
-    <div class="admin-stat">
-        <div id="adminCount" class="admin-number">0</div>
-        <div class="admin-label">PALETY W BAZIE</div>
-    </div>
-
-    <div class="admin-stat">
-        <div id="adminWithAddress" class="admin-number">0</div>
-        <div class="admin-label">PALETY Z LOKALIZACJĄ</div>
-    </div>
-
-    <div class="admin-stat">
-        <div id="adminWithoutAddress" class="admin-number">0</div>
-        <div class="admin-label">PALETY BEZ LOKALIZACJI</div>
-    </div>
-
-    <button id="adminRefreshButton">↻ ODŚWIEŻ DANE</button>
-
-    <div id="adminMessage" class="message"></div>
-</div>
-
-</div>
 
 <script>
-/*
- * PODGLĄD WMS
- * Tylko odczyt.
- *
- * Używa tego samego API, którego używała poprzednia wersja
- * aplikacji: login, checkSession, getData, logout.
- */
+
+
+/* =====================================================
+   PODGLĄD WMS
+   =====================================================
+
+   TEN ADRES TYLKO ODCZYTUJE DANE.
+
+   Nie wykonujemy tutaj:
+       save
+       delete
+       update
+
+   Jedyna operacja:
+       action=get
+
+   ===================================================== */
+
+
 const API_URL =
-    'https://script.google.com/macros/s/AKfycbxtZOSSEPQhVpGVi2huYORDDFJwPcyXoIMINk-P43s_PZNMrBTSmhPeqytZUgWOlRCU2Q/exec';
+    "https://script.google.com/macros/s/AKfycbxtZOSSEPQhVpGVi2huYORDDFJwPcyXoIMINk-P43s_PZNMrBTSmhPeqytZUgWOlRCU2Q/exec";
+
+
+
+/* =====================================================
+   DANE
+   ===================================================== */
 
 let scans = [];
-let currentUser = null;
-
-const $ = id => document.getElementById(id);
 
 
-/* =========================
-   API JSONP
-   ========================= */
 
-function api(action, params = {}) {
-    return new Promise((resolve, reject) => {
+/* =====================================================
+   ELEMENTY
+   ===================================================== */
 
-        const callback =
-            'wms_' +
-            Date.now() +
-            '_' +
-            Math.floor(Math.random() * 100000);
-
-        const script = document.createElement('script');
-        const query = new URLSearchParams();
-
-        query.set('action', action);
-        query.set('callback', callback);
-
-        Object.keys(params).forEach(key => {
-            if (params[key] !== undefined && params[key] !== null) {
-                query.set(key, String(params[key]));
-            }
-        });
-
-        let finished = false;
-
-        const cleanup = () => {
-            if (finished) return;
-            finished = true;
-
-            delete window[callback];
-            script.remove();
-        };
-
-        const timer = setTimeout(() => {
-            cleanup();
-            reject(new Error('Brak odpowiedzi serwera.'));
-        }, 15000);
-
-        window[callback] = data => {
-            clearTimeout(timer);
-            cleanup();
-
-            if (data && data.ok === false) {
-                reject(new Error(data.message || 'Błąd serwera.'));
-                return;
-            }
-
-            resolve(data);
-        };
-
-        script.onerror = () => {
-            clearTimeout(timer);
-            cleanup();
-            reject(new Error('Brak połączenia z Google Apps Script.'));
-        };
-
-        script.src = API_URL + '?' + query.toString();
-        document.body.appendChild(script);
-    });
-}
+const searchInput =
+    document.getElementById(
+        "searchInput"
+    );
 
 
-/* =========================
-   SESJA
-   ========================= */
+const searchButton =
+    document.getElementById(
+        "searchButton"
+    );
 
-function getToken() {
-    return sessionStorage.getItem('wms_token');
-}
 
-function getLogin() {
-    return sessionStorage.getItem('wms_login');
-}
+const results =
+    document.getElementById(
+        "results"
+    );
 
-function getRole() {
+
+const message =
+    document.getElementById(
+        "message"
+    );
+
+
+
+/* =====================================================
+   BEZPIECZNY HTML
+   ===================================================== */
+
+function escapeHtml(value) {
+
     return String(
-        sessionStorage.getItem('wms_role') || ''
-    ).trim().toUpperCase();
+        value ?? ""
+    )
+    .replaceAll(
+        "&",
+        "&amp;"
+    )
+    .replaceAll(
+        "<",
+        "&lt;"
+    )
+    .replaceAll(
+        ">",
+        "&gt;"
+    )
+    .replaceAll(
+        '"',
+        "&quot;"
+    )
+    .replaceAll(
+        "'",
+        "&#039;"
+    );
 }
 
-function clearSession() {
-    sessionStorage.removeItem('wms_token');
-    sessionStorage.removeItem('wms_login');
-    sessionStorage.removeItem('wms_role');
-}
-
-function isSessionError(error) {
-    return String(error?.message || '')
-        .toUpperCase()
-        .includes('SESJA');
-}
 
 
-/* =========================
-   LOGIN
-   ========================= */
+/* =====================================================
+   FORMAT LOKALIZACJI
+   ===================================================== */
 
-async function performLogin() {
+function formatAddress(
+    address
+) {
 
-    const login = $('loginInput').value.trim();
-    const password = $('passwordInput').value;
+    const value =
+        String(
+            address || ""
+        ).trim();
 
-    if (!login || !password) {
-        $('loginMessage').textContent =
-            'Podaj login i hasło.';
-        return;
-    }
 
-    $('loginButton').disabled = true;
-    $('loginButton').textContent = 'LOGOWANIE...';
-    $('loginMessage').textContent = '';
+    /*
+     * 601001
+     * ↓
+     * 601 001
+     */
 
-    try {
+    if (
+        /^\d{6}$/.test(
+            value
+        )
+    ) {
 
-        const result = await api('login', {
-            login: login,
-            password: password
-        });
+        return (
+            value.substring(
+                0,
+                3
+            )
 
-        if (!result || !result.ok) {
-            throw new Error(
-                result?.message || 'Błąd logowania.'
-            );
-        }
+            +
 
-        sessionStorage.setItem(
-            'wms_token',
-            result.token
+            " "
+
+            +
+
+            value.substring(
+                3,
+                6
+            )
         );
-
-        sessionStorage.setItem(
-            'wms_login',
-            result.login
-        );
-
-        sessionStorage.setItem(
-            'wms_role',
-            String(result.role || '').toUpperCase()
-        );
-
-        currentUser = {
-            login: result.login,
-            role: String(result.role || '').toUpperCase(),
-            token: result.token
-        };
-
-        $('passwordInput').value = '';
-
-        showLoggedIn();
-
-    } catch (error) {
-
-        $('loginMessage').textContent =
-            error.message;
-
-        $('loginButton').disabled = false;
-        $('loginButton').textContent = 'ZALOGUJ';
-    }
-}
-
-
-/* =========================
-   SPRAWDZENIE SESJI
-   ========================= */
-
-async function checkExistingSession() {
-
-    const token = getToken();
-
-    if (!token) {
-        showLogin();
-        return;
     }
 
-    try {
 
-        const result = await api('checkSession', {
-            token: token
-        });
-
-        if (result && result.loggedIn) {
-
-            const role =
-                String(result.role || '').toUpperCase();
-
-            sessionStorage.setItem(
-                'wms_login',
-                result.login
-            );
-
-            sessionStorage.setItem(
-                'wms_role',
-                role
-            );
-
-            currentUser = {
-                login: result.login,
-                role: role,
-                token: token
-            };
-
-            showLoggedIn();
-
-        } else {
-
-            clearSession();
-            showLogin();
-        }
-
-    } catch (error) {
-
-        clearSession();
-        showLogin();
-    }
+    return value;
 }
 
 
-/* =========================
-   WIDOKI
-   ========================= */
 
-function hideAll() {
-    [
-        'mainView',
-        'searchView',
-        'listView',
-        'adminView'
-    ].forEach(id => {
-        $(id).classList.add('hidden');
-    });
-}
-
-function showLogin() {
-    hideAll();
-
-    $('loginView').classList.remove('hidden');
-
-    $('loginButton').disabled = false;
-    $('loginButton').textContent = 'ZALOGUJ';
-
-    setTimeout(() => {
-        $('loginInput').focus();
-    }, 100);
-}
-
-function showLoggedIn() {
-
-    $('loginView').classList.add('hidden');
-    hideAll();
-
-    $('mainView').classList.remove('hidden');
-
-    const role =
-        String(currentUser?.role || '').toUpperCase();
-
-    $('userInfo').textContent =
-        '👤 ' +
-        currentUser.login +
-        ' [' +
-        role +
-        ']';
-
-    if (role === 'ADMIN') {
-        $('adminBtn').classList.remove('hidden');
-    } else {
-        $('adminBtn').classList.add('hidden');
-    }
-
-    loadData();
-}
-
-function showMain() {
-    hideAll();
-    $('mainView').classList.remove('hidden');
-}
-
-
-/* =========================
-   LOGOUT
-   ========================= */
-
-async function logout() {
-
-    const token = getToken();
-
-    try {
-        if (token) {
-            await api('logout', {
-                token: token
-            });
-        }
-    } catch (_) {}
-
-    clearSession();
-
-    scans = [];
-    currentUser = null;
-
-    showLogin();
-}
-
-
-/* =========================
-   DANE
-   ========================= */
+/* =====================================================
+   POBIERANIE DANYCH
+   ===================================================== */
 
 async function loadData() {
 
-    $('mainMessage').textContent =
-        'Pobieranie danych...';
+    message.textContent =
+        "Pobieranie danych...";
+
 
     try {
 
-        const result = await api('getData', {
-            token: getToken()
-        });
+        /*
+         * TYLKO GET
+         *
+         * Niczego nie zapisujemy.
+         */
 
-        scans = Array.isArray(result?.scans)
-            ? result.scans
-            : [];
+        const response =
+            await fetch(
+                API_URL +
+                "?action=get",
+                {
+                    method: "GET",
+                    cache: "no-store"
+                }
+            );
+
+
+        if (
+            !response.ok
+        ) {
+
+            throw new Error(
+                "Błąd połączenia z Google Apps Script."
+            );
+        }
+
+
+        const data =
+            await response.json();
+
 
         /*
-         * Pokazujemy tylko aktywne rekordy.
-         * Usunięte rekordy nie pojawią się w podglądzie.
+         * PodgladSkaner.gs zwraca:
+         *
+         * {
+         *     status: "OK",
+         *     data: [...]
+         * }
          */
-        scans = scans.filter(
-            scan => !scan.deleted
-        );
 
-        $('counter').textContent =
-            scans.length;
+        if (
+            data.status !== "OK"
+        ) {
 
-        $('mainMessage').textContent =
-            'Gotowy';
+            throw new Error(
+                data.message ||
+                "Błąd danych."
+            );
+        }
+
+
+        scans =
+            Array.isArray(
+                data.data
+            )
+                ? data.data
+                : [];
+
+
+        message.textContent =
+            "Dane aktualne.";
+
 
     } catch (error) {
 
-        if (isSessionError(error)) {
-            clearSession();
-            showLogin();
-            return;
-        }
-
-        $('mainMessage').textContent =
-            'BŁĄD: ' + error.message;
-    }
-}
-
-
-/* =========================
-   FORMAT LOKALIZACJI
-   ========================= */
-
-function formatAddress(address) {
-
-    const value =
-        String(address || '').trim();
-
-    if (/^\d{6}$/.test(value)) {
-        return (
-            value.substring(0, 3) +
-            ' ' +
-            value.substring(3, 6)
+        console.error(
+            error
         );
+
+
+        message.innerHTML =
+            '<span class="error">' +
+            'BŁĄD POŁĄCZENIA Z GOOGLE APPS SCRIPT' +
+            '</span>';
+
+
+        results.innerHTML =
+            '<div class="message error">' +
+            escapeHtml(
+                error.message
+            ) +
+            '</div>';
     }
-
-    return value || 'BRAK LOKALIZACJI';
 }
 
 
-/* =========================
-   BEZPIECZNY TEKST
-   ========================= */
 
-function escapeHtml(value) {
-    return String(value ?? '')
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#039;');
-}
+/* =====================================================
+   SZUKANIE
+   ===================================================== */
+
+function searchLabel() {
+
+    const text =
+        searchInput
+            .value
+            .trim();
 
 
-/* =========================
-   SZUKAJ
-   ========================= */
+    if (!text) {
 
-function showSearch() {
+        results.innerHTML =
+            '<div class="message">' +
+            'Wpisz fragment numeru etykiety.' +
+            '</div>';
 
-    hideAll();
-
-    $('searchView').classList.remove('hidden');
-
-    $('searchInput').value = '';
-    $('searchResult').innerHTML = '';
-
-    setTimeout(() => {
-        $('searchInput').focus();
-    }, 100);
-}
-
-function runSearch() {
-
-    const fragment =
-        $('searchInput').value.trim();
-
-    const resultBox =
-        $('searchResult');
-
-    if (!fragment) {
-        resultBox.innerHTML =
-            '<div class="empty">Wpisz fragment numeru etykiety.</div>';
         return;
     }
 
-    const results =
-        scans.filter(scan => {
-            const code =
-                String(scan.code || '').trim();
 
-            return code
-                .toLowerCase()
-                .includes(fragment.toLowerCase());
-        });
+    /*
+     * Szukamy fragmentu.
+     *
+     * Przykład:
+     *
+     * wpisujesz:
+     * 591
+     *
+     * znajdzie:
+     *
+     * 5907078456591
+     * 1591001234567
+     * itd.
+     */
 
-    if (!results.length) {
-        resultBox.innerHTML =
-            '<div class="empty">BRAK WYNIKU</div>';
+    const found =
+        scans.filter(
+            scan => {
+
+                const code =
+                    String(
+                        scan.code || ""
+                    ).trim();
+
+
+                return code
+                    .toLowerCase()
+                    .includes(
+                        text.toLowerCase()
+                    );
+            }
+        );
+
+
+    if (
+        found.length === 0
+    ) {
+
+        results.innerHTML =
+            '<div class="message">' +
+            'BRAK WYNIKÓW' +
+            '</div>';
+
         return;
     }
 
-    let html =
-        '<div class="result-info">ZNALEZIONO: ' +
-        results.length +
+
+    let html = "";
+
+
+    html +=
+        '<div class="count">' +
+        'ZNALEZIONO: ' +
+        found.length +
         '</div>';
 
-    results.forEach(scan => {
 
-        /*
-         * WAŻNE:
-         * Wynik pokazuje cały numer etykiety
-         * oraz lokalizację powiązaną z tym rekordem.
-         */
-        html +=
-            '<div class="result-row">' +
-                '<div class="result-code">' +
-                    escapeHtml(scan.code) +
-                '</div>' +
-                '<div class="result-address">' +
-                    escapeHtml(formatAddress(scan.address)) +
-                '</div>' +
-            '</div>';
-    });
+    found.forEach(
+        scan => {
 
-    resultBox.innerHTML = html;
+            html +=
+                '<div class="result">' +
+
+                    '<div class="code">' +
+                        escapeHtml(
+                            scan.code
+                        ) +
+                    '</div>' +
+
+                    '<div class="location">' +
+                        escapeHtml(
+                            formatAddress(
+                                scan.address
+                            )
+                        ) +
+                    '</div>' +
+
+                '</div>';
+        }
+    );
+
+
+    results.innerHTML =
+        html;
 }
 
 
-/* =========================
-   LISTA PALET
-   ========================= */
 
-function showList() {
-
-    hideAll();
-
-    $('listView').classList.remove('hidden');
-
-    renderList();
-}
-
-function renderList() {
-
-    const box = $('listResult');
-
-    if (!scans.length) {
-        box.innerHTML =
-            '<div class="empty">BRAK PALET W BAZIE</div>';
-        return;
-    }
-
-    let html = '';
-
-    scans.forEach(scan => {
-
-        html +=
-            '<div class="result-row">' +
-                '<div class="result-code">' +
-                    escapeHtml(scan.code) +
-                '</div>' +
-                '<div class="result-address">' +
-                    escapeHtml(formatAddress(scan.address)) +
-                '</div>' +
-            '</div>';
-    });
-
-    box.innerHTML = html;
-}
-
-async function refreshList() {
-    $('refreshButton').disabled = true;
-    $('refreshButton').textContent = 'POBIERANIE...';
-
-    await loadData();
-
-    renderList();
-
-    $('refreshButton').disabled = false;
-    $('refreshButton').textContent = '↻ ODŚWIEŻ DANE';
-}
-
-
-/* =========================
-   PANEL ADMINA
-   TYLKO PODGLĄD
-   ========================= */
-
-function showAdmin() {
-
-    if (getRole() !== 'ADMIN') {
-        alert('Brak uprawnień.');
-        return;
-    }
-
-    hideAll();
-
-    $('adminView').classList.remove('hidden');
-
-    renderAdminStats();
-}
-
-function renderAdminStats() {
-
-    const withAddress =
-        scans.filter(
-            scan =>
-                String(scan.address || '').trim() !== ''
-        ).length;
-
-    const withoutAddress =
-        scans.length - withAddress;
-
-    $('adminCount').textContent =
-        scans.length;
-
-    $('adminWithAddress').textContent =
-        withAddress;
-
-    $('adminWithoutAddress').textContent =
-        withoutAddress;
-
-    $('adminMessage').textContent =
-        'Tylko podgląd — brak edycji.';
-}
-
-async function refreshAdmin() {
-
-    $('adminRefreshButton').disabled = true;
-    $('adminRefreshButton').textContent =
-        'POBIERANIE...';
-
-    await loadData();
-
-    renderAdminStats();
-
-    $('adminRefreshButton').disabled = false;
-    $('adminRefreshButton').textContent =
-        '↻ ODŚWIEŻ DANE';
-}
-
-
-/* =========================
+/* =====================================================
    EVENTS
-   ========================= */
+   ===================================================== */
 
-$('loginButton').onclick =
-    performLogin;
-
-$('logoutButton').onclick =
-    logout;
-
-$('searchBtn').onclick =
-    showSearch;
-
-$('searchButton').onclick =
-    runSearch;
-
-$('listBtn').onclick =
-    showList;
-
-$('refreshButton').onclick =
-    refreshList;
-
-$('adminBtn').onclick =
-    showAdmin;
-
-$('adminRefreshButton').onclick =
-    refreshAdmin;
-
-$('loginInput').addEventListener(
-    'keydown',
-    event => {
-        if (event.key === 'Enter') {
-            $('passwordInput').focus();
-        }
-    }
+searchButton.addEventListener(
+    "click",
+    searchLabel
 );
 
-$('passwordInput').addEventListener(
-    'keydown',
-    event => {
-        if (event.key === 'Enter') {
-            performLogin();
-        }
-    }
-);
 
-$('searchInput').addEventListener(
-    'keydown',
+searchInput.addEventListener(
+    "keydown",
     event => {
-        if (event.key === 'Enter') {
-            runSearch();
+
+        if (
+            event.key === "Enter"
+        ) {
+
+            searchLabel();
         }
     }
 );
 
 
-/* =========================
+
+/* =====================================================
    START
-   ========================= */
+   ===================================================== */
 
-window.addEventListener(
-    'load',
-    () => {
-        checkExistingSession();
-    }
-);
+loadData();
+
 </script>
 
+
 </body>
+
 </html>
