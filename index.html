@@ -18,9 +18,7 @@
 <title>SKANER WMS</title>
 
 
-<script
-    src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js">
-</script>
+<script src="https://unpkg.com/@zxing/browser@0.1.5/umd/zxing-browser.min.js"></script>
 
 
 <style>
@@ -345,44 +343,6 @@ body {
     object-fit: cover;
 
     background: #111111;
-
-}
-
-.scan-frame {
-
-    position: absolute;
-
-    left: 50%;
-
-    top: 50%;
-
-    transform: translate(-50%, -50%);
-
-    width: 72%;
-
-    height: 48%;
-
-    border: 4px solid rgba(255,255,255,.9);
-
-    border-radius: 14px;
-
-    display: flex;
-
-    align-items: flex-end;
-
-    justify-content: center;
-
-    padding-bottom: 10px;
-
-    color: white;
-
-    font-size: 16px;
-
-    font-weight: 700;
-
-    text-shadow: 0 1px 3px #000;
-
-    pointer-events: none;
 
 }
 
@@ -840,12 +800,6 @@ button:disabled {
                 muted
                 playsinline
             ></video>
-            <div
-                id="scanFrame"
-                class="scan-frame"
-            >
-                USTAW KOD W RAMCE
-            </div>
         </div>
 
     </div>
@@ -1215,6 +1169,7 @@ let scanner = null;
 
 let cameraRunning = false;
 let cameraStream = null;
+let barcodeReader = null;
 
 let acceptingScan = false;
 
@@ -2244,32 +2199,23 @@ async function startScanner() {
 
     try {
 
-        if (
-            !navigator.mediaDevices ||
-            !navigator.mediaDevices.getUserMedia
-        ) {
-            throw new Error(
-                'Przeglądarka nie udostępnia kamery.'
-            );
+        if (!navigator.mediaDevices?.getUserMedia) {
+            throw new Error('Brak obsługi kamery.');
         }
 
         cameraStream =
             await navigator.mediaDevices.getUserMedia({
-
                 video: {
                     facingMode: {
                         ideal: 'environment'
                     },
-
                     width: {
-                        ideal: 1280
+                        ideal: 1920
                     },
-
                     height: {
-                        ideal: 720
+                        ideal: 1080
                     }
                 },
-
                 audio: false
             });
 
@@ -2279,8 +2225,7 @@ async function startScanner() {
 
         cameraRunning = true;
 
-        // Podgląd jest stale widoczny po zalogowaniu.
-        // Samo skanowanie dwóch klatek odbywa się całkowicie w tle.
+        // Podgląd pozostaje cały czas widoczny.
         reader.style.display = 'block';
 
         return true;
@@ -2293,7 +2238,7 @@ async function startScanner() {
 
         alert(
             'Nie udało się uruchomić aparatu.\n\n' +
-            'Sprawdź uprawnienia aparatu oraz HTTPS.'
+            'Sprawdź uprawnienia aparatu i HTTPS.'
         );
 
         return false;
@@ -2303,34 +2248,23 @@ async function startScanner() {
 
 async function ensureCameraPreview() {
 
-    if (!getToken()) {
-        return;
-    }
+    if (!getToken()) return;
 
-    if (cameraRunning && cameraStream) {
-        return;
-    }
+    if (cameraRunning && cameraStream) return;
 
-    const ok = await startScanner();
-
-    if (!ok) {
-        setMessage(
-            'Nie można uruchomić podglądu aparatu.'
-        );
-    }
+    await startScanner();
 }
 
 
 /* =========================================================
    SKANUJ KOD
-   DWA ZDJĘCIA ROBIONE PO KOLEI — CAŁOŚĆ W TLE
+   DWA SZYBKIE, KOLEJNE ODCZYTY
+   QR + KODY KRESKOWE 1D
    ========================================================= */
 
 async function armScan() {
 
-    if (processingScan) {
-        return;
-    }
+    if (processingScan) return;
 
     processingScan = true;
     acceptingScan = false;
@@ -2339,52 +2273,33 @@ async function armScan() {
 
     button.disabled = true;
 
-    setMessage(
-        'Gotowy'
-    );
-
     try {
 
-        const started =
-            await startScanner();
+        const started = await startScanner();
 
         if (!started) {
-            processingScan = false;
-            button.disabled = false;
-            return;
+            throw new Error('Brak kamery.');
         }
 
-        // Stabilizacja obrazu i ostrości po uruchomieniu kamery.
-        await wait(1200);
-
-        // Dwie niezależne próby odczytu. W każdej próbie robimy
-        // serię bardzo szybkich klatek, ale operator widzi tylko
-        // końcowy rezultat. Dzięki temu pojedyncze rozmycie klatki
-        // nie powoduje fałszywego 'SKAN NIEUDANY'.
+        // Pierwszy odczyt.
         const first =
-            await decodeAttempt(
+            await decodeBarcodeFast(
                 $('cameraVideo'),
-                1400
+                1800
             );
 
-        await wait(300);
+        // Prawie natychmiast drugi odczyt.
+        await wait(80);
 
         const second =
-            await decodeAttempt(
+            await decodeBarcodeFast(
                 $('cameraVideo'),
-                1400
+                1800
             );
 
-        console.log(
-            'Skan 1:',
-            first,
-            'Skan 2:',
-            second
-        );
-
         /*
-         * TYLKO DWA IDENTYCZNE ODCZYTY
-         * mogą zostać zapisane.
+         * Zapis tylko wtedy, gdy oba odczyty są
+         * identyczne i niepuste.
          */
         if (
             first &&
@@ -2395,24 +2310,15 @@ async function armScan() {
             $('lastCode').textContent =
                 'Ostatni skan: ' + second;
 
-            beep();
-            vibrateSuccess();
-
-            await processAcceptedCode(
-                second
-            );
+            await processAcceptedCode(second);
 
         } else {
 
-            /*
-             * NIEZGODNOŚĆ / BRAK ODCZYTU:
-             * absolutnie nic nie zapisujemy.
-             */
             $('lastCode').textContent =
                 'Ostatni skan: -';
 
             setMessage(
-                'SKAN NIEUDANY'
+                'Skan niepoprawny, powtórz skan'
             );
 
             processingScan = false;
@@ -2425,41 +2331,23 @@ async function armScan() {
         console.error(error);
 
         setMessage(
-            'SKAN NIEUDANY'
+            'Skan niepoprawny, powtórz skan'
         );
 
         processingScan = false;
         acceptingScan = false;
         button.disabled = false;
-
     }
 }
 
 
 /* =========================================================
-   ZDJĘCIE + ODCZYT QR — W PAMIĘCI, BEZ POKAZYWANIA
+   SZYBKI ODCZYT
+   Najpierw natywny BarcodeDetector, potem ZXing.
+   BarcodeDetector dobrze radzi sobie z EAN/UPC/Code128/QR.
    ========================================================= */
 
-async function decodeAttempt(video, duration) {
-
-    const started = Date.now();
-
-    while (Date.now() - started < duration) {
-
-        const value = captureAndDecode(video);
-
-        if (value) {
-            return value;
-        }
-
-        await wait(180);
-    }
-
-    return null;
-}
-
-
-function captureAndDecode(video) {
+async function decodeBarcodeFast(video, timeoutMs) {
 
     if (
         !video ||
@@ -2470,69 +2358,129 @@ function captureAndDecode(video) {
         return null;
     }
 
-    const canvas =
-        document.createElement('canvas');
+    /*
+     * 1. Natywny BarcodeDetector — bardzo szybki,
+     * jeżeli przeglądarka telefonu go obsługuje.
+     */
+    if ('BarcodeDetector' in window) {
 
-    const maxWidth = 1280;
+        try {
 
-    const scale =
-        Math.min(
-            1,
-            maxWidth / video.videoWidth
-        );
+            const formats = [
+                'qr_code',
+                'ean_13',
+                'ean_8',
+                'upc_a',
+                'upc_e',
+                'code_128',
+                'code_39',
+                'code_93',
+                'itf'
+            ];
 
-    canvas.width =
-        Math.round(
-            video.videoWidth * scale
-        );
+            let detector;
 
-    canvas.height =
-        Math.round(
-            video.videoHeight * scale
-        );
-
-    const ctx =
-        canvas.getContext(
-            '2d',
-            {
-                willReadFrequently: true
+            try {
+                detector =
+                    new BarcodeDetector({
+                        formats
+                    });
+            } catch (_) {
+                detector =
+                    new BarcodeDetector();
             }
+
+            const started = Date.now();
+
+            while (
+                Date.now() - started <
+                timeoutMs
+            ) {
+
+                try {
+
+                    const found =
+                        await detector.detect(
+                            video
+                        );
+
+                    if (
+                        found &&
+                        found.length
+                    ) {
+
+                        const value =
+                            found[0].rawValue;
+
+                        if (value) {
+                            return String(
+                                value
+                            ).trim();
+                        }
+                    }
+
+                } catch (_) {}
+
+                await wait(40);
+            }
+
+        } catch (_) {
+            // Przechodzimy do ZXing.
+        }
+    }
+
+
+    /*
+     * 2. ZXing MultiFormat — fallback dla telefonów,
+     * które nie mają BarcodeDetector.
+     */
+    if (
+        typeof ZXingBrowser ===
+        'undefined'
+    ) {
+        console.error(
+            'ZXing nie został załadowany.'
         );
-
-    ctx.drawImage(
-        video,
-        0,
-        0,
-        canvas.width,
-        canvas.height
-    );
-
-    const imageData =
-        ctx.getImageData(
-            0,
-            0,
-            canvas.width,
-            canvas.height
-        );
-
-    if (typeof jsQR !== 'function') {
         return null;
     }
 
-    const result =
-        jsQR(
-            imageData.data,
-            imageData.width,
-            imageData.height,
-            {
-                inversionAttempts:
-                    'attemptBoth'
-            }
-        );
+    try {
 
-    return result
-        ? String(result.data || '').trim()
-        : null;
+        if (!barcodeReader) {
+
+            barcodeReader =
+                new ZXingBrowser.BrowserMultiFormatReader();
+        }
+
+        const result =
+            await Promise.race([
+                barcodeReader
+                    .decodeOnceFromVideoElement(
+                        video
+                    ),
+
+                new Promise(
+                    resolve =>
+                        setTimeout(
+                            () => resolve(null),
+                            timeoutMs
+                        )
+                )
+            ]);
+
+        if (
+            result &&
+            result.text
+        ) {
+
+            return String(
+                result.text
+            ).trim();
+        }
+
+    } catch (_) {}
+
+    return null;
 }
 
 
@@ -2554,29 +2502,33 @@ function wait(ms) {
 
 async function processAcceptedCode(code) {
 
-    $('lastCode').textContent =
-        'Ostatni skan: ' + code;
+    if (!code) {
 
-    setMessage('Zapisywanie...');
+        setMessage(
+            'Skan niepoprawny, powtórz skan'
+        );
+
+        processingScan = false;
+        acceptingScan = false;
+        $('scanBtn').disabled = false;
+
+        return;
+    }
 
     if (
         scans.some(
             scan =>
                 !scan.deleted &&
-                String(scan.code) === code
+                String(scan.code) === String(code)
         )
     ) {
 
-        $('lastCode').textContent =
-            'Kod już istnieje: ' + code;
-
         setMessage(
-            'KOD JUŻ ISTNIEJE — NIE ZAPISANO PONOWNIE'
+            'Skan niepoprawny, powtórz skan'
         );
 
         processingScan = false;
         acceptingScan = false;
-
         $('scanBtn').disabled = false;
 
         return;
@@ -2592,7 +2544,7 @@ async function processAcceptedCode(code) {
                       Math.random()
             ),
 
-        code: code,
+        code: String(code),
 
         address: null,
 
@@ -2608,13 +2560,9 @@ async function processAcceptedCode(code) {
                 'saveScan',
                 {
                     token: getToken(),
-
                     id: scan.id,
-
                     code: scan.code,
-
                     address: null,
-
                     date: scan.date
                 }
             );
@@ -2623,7 +2571,6 @@ async function processAcceptedCode(code) {
             !result ||
             !result.ok
         ) {
-
             throw new Error(
                 result.message ||
                 'Błąd zapisu.'
@@ -2635,26 +2582,25 @@ async function processAcceptedCode(code) {
         updateCounter();
 
         $('lastCode').textContent =
-            '✓ ZAPISANO: ' + code;
+            'Ostatni skan: ' + code;
 
-        setMessage(
-            '✓ ZAPISANO'
-        );
+        beep();
+        vibrateSuccess();
+
+        setMessage('Zapisano');
 
     } catch (error) {
 
+        console.error(error);
+
         if (isSessionError(error)) {
-
             clearSession();
-
             showLogin();
-
             return;
         }
 
         setMessage(
-            'BŁĄD ZAPISU: ' +
-            error.message
+            'Skan niepoprawny, powtórz skan'
         );
     }
 
@@ -2666,7 +2612,8 @@ async function processAcceptedCode(code) {
 
 
 /* =========================================================
-   WYŁĄCZENIE APARATU — AUTOMATYCZNIE PO SKANIE
+   KAMERA
+   NIE WYŁĄCZAMY JEJ PO SKANIE
    ========================================================= */
 
 function stopScanner() {
@@ -2691,7 +2638,6 @@ function stopScanner() {
     if (video) {
 
         video.pause();
-
         video.srcObject = null;
     }
 
