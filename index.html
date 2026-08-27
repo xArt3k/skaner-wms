@@ -318,21 +318,23 @@ body {
 
 #reader {
 
-    display: none;
+    display: none !important;
 
-    width: 100%;
+    width: 1px;
 
-    height: 360px;
+    height: 1px;
 
-    min-height: 360px;
+    position: fixed;
 
-    position: relative;
+    left: -10000px;
+
+    top: -10000px;
 
     overflow: hidden;
 
-    background: #111111;
+    opacity: 0;
 
-    border-radius: 10px;
+    pointer-events: none;
 
 }
 
@@ -340,13 +342,17 @@ body {
 
     display: block;
 
-    width: 100%;
+    width: 1px;
 
-    height: 100%;
+    height: 1px;
 
-    object-fit: cover;
+    opacity: 0;
 
-    background: #111111;
+    position: fixed;
+
+    left: -10000px;
+
+    top: -10000px;
 
 }
 
@@ -848,13 +854,6 @@ button:disabled {
             >
                 USTAW KOD W RAMCE
             </div>
-        </div>
-
-        <div
-            id="scannerStatus"
-            class="scanner-status"
-        >
-            NACIŚNIJ „SKANUJ KOD”
         </div>
 
     </div>
@@ -2238,29 +2237,28 @@ async function startScanner() {
         return false;
     }
 
-    const reader = $('reader');
-    const video = $('cameraVideo');
-    const status = $('scannerStatus');
-
     if (cameraRunning && cameraStream) {
         return true;
     }
 
-    reader.style.display = 'block';
-    status.style.display = 'block';
-    status.textContent = 'URUCHAMIAM APARAT...';
+    // Kamera działa w tle — użytkownik NIE widzi podglądu
+    // ani procesu wykonywania dwóch zdjęć.
+    const reader = $('reader');
+    const video = $('cameraVideo');
+
+    reader.style.display = 'none';
 
     try {
 
-        if (!navigator.mediaDevices ||
-            !navigator.mediaDevices.getUserMedia) {
-
+        if (
+            !navigator.mediaDevices ||
+            !navigator.mediaDevices.getUserMedia
+        ) {
             throw new Error(
-                'Przeglądarka nie udostępnia getUserMedia.'
+                'Przeglądarka nie udostępnia kamery.'
             );
         }
 
-        // Tylko tylna kamera telefonu.
         cameraStream =
             await navigator.mediaDevices.getUserMedia({
 
@@ -2287,13 +2285,6 @@ async function startScanner() {
 
         cameraRunning = true;
 
-        status.textContent =
-            'APARAT GOTOWY — NACIŚNIJ „SKANUJ KOD”';
-
-        setMessage(
-            'Aparat gotowy. Naciśnij „SKANUJ KOD”.'
-        );
-
         return true;
 
     } catch (error) {
@@ -2302,14 +2293,9 @@ async function startScanner() {
 
         stopScanner();
 
-        setMessage(
-            'NIE UDAŁO SIĘ URUCHOMIĆ APARATU.'
-        );
-
         alert(
             'Nie udało się uruchomić aparatu.\n\n' +
-            'Sprawdź uprawnienia aparatu dla przeglądarki ' +
-            'oraz czy strona działa przez HTTPS.'
+            'Sprawdź uprawnienia aparatu oraz HTTPS.'
         );
 
         return false;
@@ -2318,7 +2304,8 @@ async function startScanner() {
 
 
 /* =========================================================
-   SKANUJ KOD — DOKŁADNIE 2 ZDJĘCIA
+   SKANUJ KOD
+   DWA ZDJĘCIA ROBIONE PO KOLEI — CAŁOŚĆ W TLE
    ========================================================= */
 
 async function armScan() {
@@ -2327,101 +2314,122 @@ async function armScan() {
         return;
     }
 
-    const started =
-        await startScanner();
-
-    if (!started) {
-        return;
-    }
-
     processingScan = true;
     acceptingScan = false;
 
     const button = $('scanBtn');
-    const status = $('scannerStatus');
-    const video = $('cameraVideo');
 
     button.disabled = true;
 
-    status.textContent =
-        '📸 PRZYGOTUJĘ ZDJĘCIE 1 Z 2...';
-
     setMessage(
-        'Skieruj aparat na kod.'
+        'Skanowanie...'
     );
 
-    // Daj aparatowi chwilę na ustawienie ostrości.
-    await wait(900);
+    try {
 
-    const first =
-        captureAndDecode(video);
+        const started =
+            await startScanner();
 
-    status.textContent =
-        '📸 ZDJĘCIE 2 Z 2...';
+        if (!started) {
+            processingScan = false;
+            button.disabled = false;
+            return;
+        }
 
-    await wait(850);
+        // Stabilizacja obrazu po uruchomieniu kamery.
+        await wait(1000);
 
-    const second =
-        captureAndDecode(video);
+        /*
+         * ZDJĘCIE 1
+         * Użytkownik niczego nie widzi.
+         */
+        const first =
+            captureAndDecode(
+                $('cameraVideo')
+            );
 
-    console.log(
-        'SKAN 1:',
-        first,
-        'SKAN 2:',
-        second
-    );
+        /*
+         * ZDJĘCIE 2
+         * Robione osobno, chwilę po pierwszym.
+         */
+        await wait(750);
 
-    if (
-        first &&
-        second &&
-        first === second
-    ) {
+        const second =
+            captureAndDecode(
+                $('cameraVideo')
+            );
 
-        status.textContent =
-            '✓ DWA ZGODNE ODCZYTY';
-
-        $('lastCode').textContent =
-            'Odczyt 1/2: ' +
-            first +
-            ' | Odczyt 2/2: ' +
-            second;
-
-        beep();
-        vibrateSuccess();
-
-        setMessage(
-            '✓ ZGODNOŚĆ — ZAPISYWANIE KODU...'
-        );
-
-        await processAcceptedCode(
+        console.log(
+            'Skan 1:',
+            first,
+            'Skan 2:',
             second
         );
 
-    } else {
+        /*
+         * TYLKO DWA IDENTYCZNE ODCZYTY
+         * mogą zostać zapisane.
+         */
+        if (
+            first &&
+            second &&
+            first === second
+        ) {
 
-        $('lastCode').textContent =
-            'Odczyt 1/2: ' +
-            (first || '-') +
-            ' | Odczyt 2/2: ' +
-            (second || '-');
+            $('lastCode').textContent =
+                'Ostatni skan: ' + second;
 
-        status.textContent =
-            '✗ NIEZGODNOŚĆ — POWTÓRZ SKANOWANIE';
+            beep();
+            vibrateSuccess();
+
+            setMessage(
+                '✓ ZGODNY — ZAPISYWANIE...'
+            );
+
+            await processAcceptedCode(
+                second
+            );
+
+        } else {
+
+            /*
+             * NIEZGODNOŚĆ / BRAK ODCZYTU:
+             * absolutnie nic nie zapisujemy.
+             */
+            $('lastCode').textContent =
+                'Ostatni skan: -';
+
+            setMessage(
+                '✗ NIEZGODNOŚĆ — POWTÓRZ SKANOWANIE'
+            );
+
+            processingScan = false;
+            acceptingScan = false;
+            button.disabled = false;
+        }
+
+    } catch (error) {
+
+        console.error(error);
 
         setMessage(
-            '✗ NIEZGODNOŚĆ — NIC NIE ZAPISANO. POWTÓRZ SKANOWANIE.'
+            '✗ NIEZGODNOŚĆ — POWTÓRZ SKANOWANIE'
         );
 
-        // Przy niezgodności NIE wywołujemy saveScan.
         processingScan = false;
         acceptingScan = false;
         button.disabled = false;
+
+    } finally {
+
+        // Po dwóch zdjęciach kamera jest wyłączana.
+        stopScanner();
     }
 }
 
 
 /* =========================================================
-   ZDJĘCIE + ODCZYT QR
+   ZDJĘCIE + ODCZYT QR — W PAMIĘCI, BEZ POKAZYWANIA
    ========================================================= */
 
 function captureAndDecode(video) {
@@ -2438,7 +2446,7 @@ function captureAndDecode(video) {
     const canvas =
         document.createElement('canvas');
 
-    const maxWidth = 1000;
+    const maxWidth = 1280;
 
     const scale =
         Math.min(
@@ -2481,11 +2489,6 @@ function captureAndDecode(video) {
         );
 
     if (typeof jsQR !== 'function') {
-
-        console.error(
-            'Biblioteka jsQR nie została załadowana.'
-        );
-
         return null;
     }
 
@@ -2525,7 +2528,7 @@ function wait(ms) {
 async function processAcceptedCode(code) {
 
     $('lastCode').textContent =
-        'Odczytano 2/2: ' + code;
+        'Ostatni skan: ' + code;
 
     setMessage('Zapisywanie...');
 
@@ -2608,11 +2611,8 @@ async function processAcceptedCode(code) {
             '✓ ZAPISANO: ' + code;
 
         setMessage(
-            '✓ ZAPISANO — SKAN ZAKOŃCZONY'
+            '✓ ZAPISANO'
         );
-
-        $('scannerStatus').textContent =
-            'ZAPISANO. NACIŚNIJ „SKANUJ KOD” DLA NASTĘPNEGO.';
 
     } catch (error) {
 
@@ -2629,9 +2629,6 @@ async function processAcceptedCode(code) {
             'BŁĄD ZAPISU: ' +
             error.message
         );
-
-        $('scannerStatus').textContent =
-            'BŁĄD — SPRÓBUJ PONOWNIE';
     }
 
     processingScan = false;
@@ -2642,13 +2639,12 @@ async function processAcceptedCode(code) {
 
 
 /* =========================================================
-   STOP APARATU — WEWNĘTRZNIE
+   WYŁĄCZENIE APARATU — AUTOMATYCZNIE PO SKANIE
    ========================================================= */
 
 function stopScanner() {
 
     acceptingScan = false;
-    processingScan = false;
 
     if (cameraStream) {
 
@@ -2679,21 +2675,6 @@ function stopScanner() {
 
     if (reader) {
         reader.style.display = 'none';
-    }
-
-    const status =
-        $('scannerStatus');
-
-    if (status) {
-        status.textContent =
-            'NACIŚNIJ „SKANUJ KOD”';
-    }
-
-    const button =
-        $('scanBtn');
-
-    if (button) {
-        button.disabled = false;
     }
 }
 
