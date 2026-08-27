@@ -1,16 +1,34 @@
 <!DOCTYPE html>
 <html lang="pl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-<meta name="theme-color" content="#ffffff">
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+>
+
+<meta
+    name="theme-color"
+    content="#ffffff"
+>
 
 <title>SKANER WMS</title>
 
-<script src="https://unpkg.com/html5-qrcode" defer></script>
+
+<script
+    src="https://unpkg.com/html5-qrcode"
+    defer>
+</script>
+
 
 <style>
+
+/* =========================================================
+   PODSTAWY
+   ========================================================= */
 
 * {
     box-sizing: border-box;
@@ -18,523 +36,1074 @@
 
 html,
 body {
+
     margin: 0;
     padding: 0;
+
     min-height: 100%;
-    font-family: Arial, Helvetica, sans-serif;
+
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
     background: #ffffff;
+
     color: #111111;
 }
 
 body {
+
     padding: 16px;
+
 }
 
 .app {
+
     width: 100%;
+
     max-width: 720px;
+
     margin: 0 auto;
+
 }
 
-/* =========================
-   GÓRA
-   ========================= */
+
+/* =========================================================
+   LOGOWANIE
+   ========================================================= */
+
+#loginView {
+
+    min-height:
+        calc(100vh - 32px);
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+}
+
+.login-box {
+
+    width: 100%;
+
+    max-width: 420px;
+
+    background: #ffffff;
+
+    border: 1px solid #dddddd;
+
+    border-radius: 10px;
+
+    padding: 28px;
+
+    box-shadow:
+        0 4px 20px rgba(0,0,0,.08);
+
+}
+
+.login-logo {
+
+    text-align: center;
+
+    font-size: 30px;
+
+    font-weight: 700;
+
+    margin-bottom: 5px;
+
+}
+
+.login-subtitle {
+
+    text-align: center;
+
+    color: #666666;
+
+    font-size: 14px;
+
+    margin-bottom: 25px;
+
+}
+
+.login-label {
+
+    display: block;
+
+    font-size: 13px;
+
+    font-weight: 700;
+
+    margin-top: 15px;
+
+    margin-bottom: 6px;
+
+}
+
+.login-input {
+
+    width: 100%;
+
+    min-height: 50px;
+
+    padding: 10px 12px;
+
+    border: 1px solid #aaaaaa;
+
+    border-radius: 5px;
+
+    font-size: 18px;
+
+    outline: none;
+
+}
+
+.login-input:focus {
+
+    border-color: #333333;
+
+}
+
+.login-button {
+
+    width: 100%;
+
+    min-height: 52px;
+
+    margin-top: 22px;
+
+    border: 1px solid #111111;
+
+    border-radius: 5px;
+
+    background: #111111;
+
+    color: #ffffff;
+
+    font-size: 17px;
+
+    font-weight: 700;
+
+    cursor: pointer;
+
+}
+
+.login-button:disabled {
+
+    opacity: .55;
+
+}
+
+.login-message {
+
+    min-height: 24px;
+
+    margin-top: 15px;
+
+    text-align: center;
+
+    font-size: 14px;
+
+    font-weight: 600;
+
+}
+
+
+/* =========================================================
+   GÓRA SKANERA
+   ========================================================= */
 
 .top {
+
     display: flex;
+
     align-items: center;
+
     gap: 10px;
+
 }
 
 .title {
+
     flex: 1;
+
     font-size: 24px;
+
     font-weight: 700;
+
 }
 
 .counter {
+
     background: #000000;
+
     color: #ffffff;
+
     padding: 8px 12px;
+
     font-size: 18px;
+
     font-weight: 700;
+
     min-width: 42px;
+
     text-align: center;
+
 }
 
-/* =========================
+
+/* =========================================================
+   INFORMACJA O UŻYTKOWNIKU
+   ========================================================= */
+
+.user-bar {
+
+    margin-top: 8px;
+
+    padding: 8px 10px;
+
+    background: #f1f1f1;
+
+    font-size: 13px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+}
+
+.user-name {
+
+    flex: 1;
+
+    font-weight: 700;
+
+}
+
+.logout-button {
+
+    width: auto;
+
+    min-height: 34px;
+
+    margin: 0;
+
+    padding: 5px 10px;
+
+    font-size: 12px;
+
+}
+
+
+/* =========================================================
    ADRES
-   ========================= */
+   ========================================================= */
 
 .label {
+
     margin-top: 15px;
+
     font-size: 12px;
+
 }
 
 .address {
+
     margin-top: 4px;
+
     background: #E8F5E9;
+
     padding: 12px;
+
     font-size: 20px;
+
     font-weight: 700;
+
     min-height: 48px;
+
 }
 
-/* =========================
-   SKANER
-   ========================= */
+
+/* =========================================================
+   APARAT
+   ========================================================= */
 
 #reader {
+
     display: none;
+
     width: 100%;
+
     margin-top: 10px;
+
     overflow: hidden;
+
 }
 
 #reader video {
+
     width: 100% !important;
+
     height: auto !important;
+
 }
 
-/* =========================
+
+/* =========================================================
    OSTATNI SKAN
-   ========================= */
+   ========================================================= */
 
 .last {
+
     margin-top: 10px;
+
     font-size: 16px;
+
     font-weight: 700;
+
     min-height: 24px;
+
 }
 
-/* =========================
+
+/* =========================================================
    PRZYCISKI
-   ========================= */
+   ========================================================= */
 
 button {
+
     width: 100%;
+
     min-height: 52px;
+
     margin-top: 8px;
+
     border: 1px solid #bbbbbb;
+
     border-radius: 4px;
+
     background: #efefef;
+
     color: #111111;
+
     font-size: 16px;
+
     font-weight: 600;
+
     cursor: pointer;
+
 }
 
 button:active {
-    transform: scale(0.99);
+
+    transform: scale(.99);
+
 }
 
 button:disabled {
-    opacity: 0.55;
+
+    opacity: .55;
+
 }
 
-/* =========================
+
+/* =========================================================
    KOMUNIKAT
-   ========================= */
+   ========================================================= */
 
 .message {
+
     margin-top: 5px;
+
     font-size: 14px;
+
     min-height: 22px;
+
 }
+
+
+/* =========================================================
+   WIDOKI
+   ========================================================= */
 
 .hidden {
-    display: none !important;
-}
 
-/* =========================
-   SEKCJE
-   ========================= */
+    display: none !important;
+
+}
 
 .section {
+
     margin-top: 14px;
+
 }
 
+
+/* =========================================================
+   KARTY
+   ========================================================= */
+
 .card {
+
     border: 1px solid #dddddd;
+
     padding: 12px;
+
     margin-top: 8px;
+
 }
 
 .card-head {
+
     background: #E8F5E9;
+
     padding: 12px;
+
     font-size: 20px;
+
     font-weight: 700;
+
 }
 
 .card-code {
+
     font-size: 17px;
+
     font-weight: 700;
+
 }
 
 .card-address {
+
     margin-top: 5px;
+
     font-size: 15px;
+
 }
 
 .row-buttons {
+
     display: flex;
+
     gap: 8px;
+
 }
 
 .row-buttons button {
+
     flex: 1;
+
 }
 
 .back {
+
     margin-bottom: 10px;
+
 }
 
-/* =========================
-   OKNO
-   ========================= */
+
+/* =========================================================
+   INPUT
+   ========================================================= */
+
+input {
+
+    width: 100%;
+
+    min-height: 48px;
+
+    padding: 10px;
+
+    font-size: 18px;
+
+    border: 1px solid #aaaaaa;
+
+    border-radius: 4px;
+
+}
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
 
 .modal {
+
     position: fixed;
+
     inset: 0;
-    background: rgba(0, 0, 0, 0.45);
+
+    background:
+        rgba(0,0,0,.45);
+
     display: flex;
+
     align-items: flex-end;
+
     justify-content: center;
+
     z-index: 1000;
+
 }
 
 .dialog {
+
     background: #ffffff;
+
     width: 100%;
+
     max-width: 720px;
+
     padding: 18px;
-    border-radius: 12px 12px 0 0;
+
+    border-radius:
+        12px 12px 0 0;
+
 }
 
 .dialog h2 {
-    margin: 0 0 10px;
+
+    margin:
+        0 0 10px;
+
     font-size: 21px;
+
 }
 
 .dialog p {
-    margin: 8px 0;
-    white-space: pre-line;
-}
 
-input {
-    width: 100%;
-    min-height: 48px;
-    padding: 10px;
-    font-size: 18px;
-    border: 1px solid #aaaaaa;
-    border-radius: 4px;
+    margin: 8px 0;
+
+    white-space: pre-line;
+
 }
 
 .dialog-buttons {
+
     display: flex;
+
     gap: 8px;
+
 }
 
 .dialog-buttons button {
+
     flex: 1;
+
 }
 
 .danger {
+
     background: #ffebee;
+
 }
 
-/* =========================
+
+/* =========================================================
    DESKTOP
-   ========================= */
+   ========================================================= */
 
 @media (min-width: 700px) {
 
     body {
+
         padding-top: 28px;
+
     }
 
     .modal {
+
         align-items: center;
+
     }
 
     .dialog {
+
         border-radius: 10px;
+
     }
 
 }
 
 </style>
+
 </head>
 
 
 <body>
 
+
 <div class="app">
 
-    <!-- =========================
-         EKRAN GŁÓWNY
-         ========================= -->
 
-    <div id="mainView">
+<!-- =====================================================
+     LOGOWANIE
+     ===================================================== -->
 
-        <div class="top">
+<div
+    id="loginView"
+>
 
-            <div class="title">
-                SKANER WMS
-            </div>
+    <div class="login-box">
 
-            <div
-                class="counter"
-                id="counter">
-                0
-            </div>
+
+        <div class="login-logo">
+
+            🔐 WMS
 
         </div>
 
 
-        <div class="label">
-            AKTUALNY ADRES
+        <div class="login-subtitle">
+
+            Logowanie do systemu magazynowego
+
+        </div>
+
+
+        <label
+            class="login-label"
+            for="loginInput"
+        >
+
+            LOGIN
+
+        </label>
+
+
+        <input
+            class="login-input"
+            id="loginInput"
+            type="text"
+            autocomplete="username"
+            placeholder="Wpisz login"
+        >
+
+
+        <label
+            class="login-label"
+            for="passwordInput"
+        >
+
+            HASŁO
+
+        </label>
+
+
+        <input
+            class="login-input"
+            id="passwordInput"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Wpisz hasło"
+        >
+
+
+        <button
+            class="login-button"
+            id="loginButton"
+        >
+
+            ZALOGUJ
+
+        </button>
+
+
+        <div
+            class="login-message"
+            id="loginMessage"
+        ></div>
+
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     GŁÓWNY SKANER
+     ===================================================== -->
+
+<div
+    id="mainView"
+    class="hidden"
+>
+
+
+    <div class="top">
+
+
+        <div class="title">
+
+            SKANER WMS
+
         </div>
 
 
         <div
-            class="address"
-            id="address">
+            class="counter"
+            id="counter"
+        >
 
-            BRAK ADRESU
+            0
 
         </div>
+
+
+    </div>
+
+
+
+    <!-- UŻYTKOWNIK -->
+
+    <div class="user-bar">
 
 
         <div
-            id="reader">
-        </div>
+            class="user-name"
+            id="userInfo"
+        >
 
-
-        <div
-            class="last"
-            id="lastCode">
-
-            Ostatni skan: -
+            -
 
         </div>
 
 
-        <button id="scanBtn">
-            SKANUJ KOD
+        <button
+            class="logout-button"
+            id="logoutButton"
+        >
+
+            WYLOGUJ
+
         </button>
 
 
-        <button id="addressBtn">
-            DAJ ADRES
-        </button>
+    </div>
 
 
-        <button id="previewBtn">
-            PODGLĄD
-        </button>
+
+    <!-- ADRES -->
+
+    <div class="label">
+
+        AKTUALNY ADRES
+
+    </div>
 
 
-        <button id="searchBtn">
+    <div
+        class="address"
+        id="address"
+    >
+
+        BRAK ADRESU
+
+    </div>
+
+
+
+    <!-- APARAT -->
+
+    <div id="reader"></div>
+
+
+
+    <!-- OSTATNI KOD -->
+
+    <div
+        class="last"
+        id="lastCode"
+    >
+
+        Ostatni skan: -
+
+    </div>
+
+
+
+    <button
+        id="scanBtn"
+    >
+
+        SKANUJ KOD
+
+    </button>
+
+
+    <button
+        id="addressBtn"
+    >
+
+        DAJ ADRES
+
+    </button>
+
+
+    <button
+        id="previewBtn"
+    >
+
+        PODGLĄD
+
+    </button>
+
+
+    <button
+        id="searchBtn"
+    >
+
+        SZUKAJ
+
+    </button>
+
+
+    <button
+        id="googleBtn"
+    >
+
+        ⚙️ GOOGLE
+
+    </button>
+
+
+    <div
+        class="message"
+        id="message"
+    >
+
+        Gotowy
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     PODGLĄD
+     ===================================================== -->
+
+<div
+    id="previewView"
+    class="hidden"
+>
+
+
+    <button
+        class="back"
+        onclick="showMain()"
+    >
+
+        ← POWRÓT
+
+    </button>
+
+
+    <div class="title">
+
+        PODGLĄD
+
+    </div>
+
+
+    <div
+        id="previewContainer"
+        class="section"
+    ></div>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     SZUKANIE
+     ===================================================== -->
+
+<div
+    id="searchView"
+    class="hidden"
+>
+
+
+    <button
+        class="back"
+        onclick="showMain()"
+    >
+
+        ← POWRÓT
+
+    </button>
+
+
+    <div class="title">
+
+        SZUKAJ
+
+    </div>
+
+
+    <div class="section">
+
+
+        <input
+            id="searchInput"
+            placeholder="Wpisz fragment kodu"
+        >
+
+
+        <button
+            onclick="runSearch()"
+        >
+
             SZUKAJ
+
         </button>
 
 
-        <button id="googleBtn">
-            ⚙️ GOOGLE
+    </div>
+
+
+    <div
+        id="searchResult"
+        class="section"
+    ></div>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     GOOGLE
+     ===================================================== -->
+
+<div
+    id="googleView"
+    class="hidden"
+>
+
+
+    <button
+        class="back"
+        onclick="showMain()"
+    >
+
+        ← POWRÓT
+
+    </button>
+
+
+    <div class="title">
+
+        ⚙️ GOOGLE
+
+    </div>
+
+
+    <div class="section">
+
+
+        <p>
+
+            Połączenie z Google Drive działa przez
+            Google Apps Script.
+
+        </p>
+
+
+        <button
+            onclick="reloadData()"
+        >
+
+            ☁️ POBIERZ DANE
+
+        </button>
+
+
+        <button
+            id="backupButton"
+            onclick="backupData()"
+        >
+
+            ☁️ UTWÓRZ KOPIĘ JSON
+
         </button>
 
 
         <div
+            id="googleStatus"
             class="message"
-            id="message">
+        >
 
             Gotowy
 
         </div>
 
-    </div>
-
-
-    <!-- =========================
-         PODGLĄD
-         ========================= -->
-
-    <div
-        id="previewView"
-        class="hidden">
-
-        <button
-            class="back"
-            onclick="showMain()">
-
-            ← POWRÓT
-
-        </button>
-
-
-        <div class="title">
-            PODGLĄD
-        </div>
-
-
-        <div
-            id="previewContainer"
-            class="section">
-
-        </div>
-
-    </div>
-
-
-    <!-- =========================
-         SZUKANIE
-         ========================= -->
-
-    <div
-        id="searchView"
-        class="hidden">
-
-        <button
-            class="back"
-            onclick="showMain()">
-
-            ← POWRÓT
-
-        </button>
-
-
-        <div class="title">
-            SZUKAJ
-        </div>
-
-
-        <div class="section">
-
-            <input
-                id="searchInput"
-                placeholder="Wpisz fragment kodu">
-
-
-            <button
-                onclick="runSearch()">
-
-                SZUKAJ
-
-            </button>
-
-        </div>
-
-
-        <div
-            id="searchResult"
-            class="section">
-
-        </div>
-
-    </div>
-
-
-    <!-- =========================
-         GOOGLE
-         ========================= -->
-
-    <div
-        id="googleView"
-        class="hidden">
-
-        <button
-            class="back"
-            onclick="showMain()">
-
-            ← POWRÓT
-
-        </button>
-
-
-        <div class="title">
-            ⚙️ GOOGLE
-        </div>
-
-
-        <div class="section">
-
-            <p>
-                Połączenie z Google Drive działa przez
-                Google Apps Script.
-            </p>
-
-
-            <button
-                onclick="reloadData()">
-
-                ☁️ POBIERZ DANE
-
-            </button>
-
-
-            <button
-                onclick="backupData()">
-
-                ☁️ UTWÓRZ KOPIĘ JSON
-
-            </button>
-
-
-            <div
-                id="googleStatus"
-                class="message">
-
-                Gotowy
-
-            </div>
-
-        </div>
 
     </div>
 
 </div>
 
 
-<!-- =========================
+
+</div>
+
+
+
+<!-- =====================================================
      MODAL
-     ========================= -->
+     ===================================================== -->
 
 <div
     id="modal"
-    class="modal hidden">
+    class="modal hidden"
+>
+
 
     <div class="dialog">
 
-        <h2 id="dialogTitle"></h2>
 
-        <div id="dialogBody"></div>
+        <h2
+            id="dialogTitle"
+        ></h2>
+
+
+        <div
+            id="dialogBody"
+        ></div>
+
 
         <div
             class="dialog-buttons"
-            id="dialogButtons">
+            id="dialogButtons"
+        ></div>
 
-        </div>
 
     </div>
 
 </div>
+
 
 
 <script>
 
+
 /* =========================================================
    GOOGLE APPS SCRIPT
-   =========================================================
-
-   TO JEST TWÓJ BACKEND.
-
-   Nie zmieniaj adresu, jeżeli jest taki jak poniżej.
    ========================================================= */
 
 const API_URL =
-    'https://script.google.com/macros/s/AKfycbxnalja50Ryc5H7t2vOBYe6c9zXN6pdOVMa6tXqne5jv3KQOS7laoo_JcEUUSlL08prrA/exec';
+    'https://script.google.com/macros/s/AKfycbwd2-sYSpIw0N_MUo5xMSH7IHDSBX8Jtx4YznnlWr33CihUXiax6CQAIPD3r6Arr74dvw/exec';
+
 
 
 /* =========================================================
@@ -555,139 +1124,643 @@ let firstDetectionTime = 0;
 
 let currentAddress = null;
 
+let currentUser = null;
+
+
 
 /* =========================================================
-   SKRÓT
+   ELEMENTY
    ========================================================= */
 
 const $ = id =>
     document.getElementById(id);
 
 
+
 /* =========================================================
-   KOMUNIKACJA Z GOOGLE APPS SCRIPT
+   API
    ========================================================= */
 
-function api(action, params = {}) {
+function api(
+    action,
+    params = {}
+) {
 
-    return new Promise((resolve, reject) => {
+    return new Promise(
+        (
+            resolve,
+            reject
+        ) => {
 
-        const callback =
-            'cb_' +
-            Date.now() +
-            '_' +
-            Math.floor(
-                Math.random() * 100000
+
+            const callback =
+                'cb_' +
+                Date.now() +
+                '_' +
+                Math.floor(
+                    Math.random() *
+                    100000
+                );
+
+
+            const script =
+                document.createElement(
+                    'script'
+                );
+
+
+            const query =
+                new URLSearchParams();
+
+
+            query.set(
+                'action',
+                action
             );
 
 
-        const script =
-            document.createElement(
-                'script'
+            query.set(
+                'callback',
+                callback
             );
 
 
-        const query =
-            new URLSearchParams();
+            Object.keys(
+                params
+            ).forEach(
+                key => {
 
+                    if (
+                        params[key] !==
+                        undefined &&
+                        params[key] !==
+                        null
+                    ) {
 
-        query.set(
-            'action',
-            action
-        );
+                        query.set(
+                            key,
+                            String(
+                                params[key]
+                            )
+                        );
 
-
-        query.set(
-            'callback',
-            callback
-        );
-
-
-        Object.keys(params).forEach(
-            key => {
-
-                if (
-                    params[key] !== undefined &&
-                    params[key] !== null
-                ) {
-
-                    query.set(
-                        key,
-                        String(params[key])
-                    );
+                    }
 
                 }
-
-            }
-        );
+            );
 
 
-        window[callback] =
-            data => {
-
-                delete window[callback];
-
-                script.remove();
+            let finished =
+                false;
 
 
-                if (
-                    data &&
-                    data.ok === false
-                ) {
+            const cleanup =
+                () => {
+
+                    if (
+                        finished
+                    ) {
+
+                        return;
+
+                    }
+
+
+                    finished =
+                        true;
+
+
+                    try {
+
+                        delete window[
+                            callback
+                        ];
+
+                    } catch (_) {}
+
+
+                    script.remove();
+
+                };
+
+
+            window[callback] =
+                data => {
+
+                    cleanup();
+
+
+                    if (
+                        data &&
+                        data.ok === false
+                    ) {
+
+                        reject(
+                            new Error(
+                                data.message ||
+                                'Błąd'
+                            )
+                        );
+
+                        return;
+
+                    }
+
+
+                    resolve(
+                        data
+                    );
+
+                };
+
+
+            script.onerror =
+                () => {
+
+                    cleanup();
+
 
                     reject(
                         new Error(
-                            data.message ||
-                            'Błąd'
+                            'Brak połączenia z Google Apps Script.'
                         )
                     );
 
-                    return;
-
-                }
+                };
 
 
-                resolve(data);
-
-            };
-
-
-        script.onerror = () => {
-
-            delete window[callback];
-
-            script.remove();
+            script.src =
+                API_URL +
+                '?' +
+                query.toString();
 
 
-            reject(
-                new Error(
-                    'Brak połączenia z Google Apps Script.'
-                )
+            document.body.appendChild(
+                script
             );
+
+
+        }
+    );
+
+}
+
+
+
+/* =========================================================
+   SESJA — PAMIĘĆ
+   ========================================================= */
+
+function getToken() {
+
+    return sessionStorage.getItem(
+        'wms_token'
+    );
+
+}
+
+
+function getLogin() {
+
+    return sessionStorage.getItem(
+        'wms_login'
+    );
+
+}
+
+
+function getRole() {
+
+    return sessionStorage.getItem(
+        'wms_role'
+    );
+
+}
+
+
+
+/* =========================================================
+   LOGOWANIE
+   ========================================================= */
+
+async function performLogin() {
+
+
+    const login =
+        $('loginInput')
+            .value
+            .trim();
+
+
+    const password =
+        $('passwordInput')
+            .value;
+
+
+    const button =
+        $('loginButton');
+
+
+    const message =
+        $('loginMessage');
+
+
+    if (
+        !login ||
+        !password
+    ) {
+
+        message.textContent =
+            'Podaj login i hasło.';
+
+        return;
+
+    }
+
+
+    button.disabled =
+        true;
+
+
+    button.textContent =
+        'LOGOWANIE...';
+
+
+    message.textContent =
+        '';
+
+
+    try {
+
+
+        const result =
+            await api(
+                'login',
+                {
+                    login:
+                        login,
+
+                    password:
+                        password
+                }
+            );
+
+
+        if (
+            !result ||
+            !result.ok
+        ) {
+
+            throw new Error(
+                result &&
+                result.message
+                    ?
+                    result.message
+                    :
+                    'Błąd logowania.'
+            );
+
+        }
+
+
+        sessionStorage.setItem(
+            'wms_token',
+            result.token
+        );
+
+
+        sessionStorage.setItem(
+            'wms_login',
+            result.login
+        );
+
+
+        sessionStorage.setItem(
+            'wms_role',
+            result.role
+        );
+
+
+        currentUser = {
+
+            login:
+                result.login,
+
+            role:
+                result.role,
+
+            token:
+                result.token
 
         };
 
 
-        script.src =
-            API_URL +
-            '?' +
-            query.toString();
+        showLoggedIn();
 
 
-        document.body.appendChild(
-            script
-        );
+    } catch (error) {
 
-    });
+
+        message.textContent =
+            error.message ||
+            'Błąd logowania.';
+
+
+        button.disabled =
+            false;
+
+
+        button.textContent =
+            'ZALOGUJ';
+
+    }
 
 }
+
+
+
+/* =========================================================
+   SPRAWDZENIE SESJI
+   ========================================================= */
+
+async function checkExistingSession() {
+
+
+    const token =
+        getToken();
+
+
+    if (!token) {
+
+        showLogin();
+
+        return;
+
+    }
+
+
+    try {
+
+
+        const result =
+            await api(
+                'checkSession',
+                {
+                    token:
+                        token
+                }
+            );
+
+
+        if (
+            result &&
+            result.loggedIn
+        ) {
+
+
+            currentUser = {
+
+                login:
+                    result.login,
+
+                role:
+                    result.role,
+
+                token:
+                    token
+
+            };
+
+
+            showLoggedIn();
+
+
+        } else {
+
+            clearSession();
+
+            showLogin();
+
+        }
+
+
+    } catch (_) {
+
+        clearSession();
+
+        showLogin();
+
+    }
+
+}
+
+
+
+/* =========================================================
+   POKAZANIE LOGOWANIA
+   ========================================================= */
+
+function showLogin() {
+
+
+    stopScanner();
+
+
+    $('loginView')
+        .classList
+        .remove(
+            'hidden'
+        );
+
+
+    $('mainView')
+        .classList
+        .add(
+            'hidden'
+        );
+
+
+    [
+        'previewView',
+        'searchView',
+        'googleView'
+    ].forEach(
+        id => {
+
+            $(id)
+                .classList
+                .add(
+                    'hidden'
+                );
+
+        }
+    );
+
+
+    $('loginInput')
+        .focus();
+
+}
+
+
+
+/* =========================================================
+   POKAZANIE APLIKACJI
+   ========================================================= */
+
+async function showLoggedIn() {
+
+
+    $('loginView')
+        .classList
+        .add(
+            'hidden'
+        );
+
+
+    $('mainView')
+        .classList
+        .remove(
+            'hidden'
+        );
+
+
+    $('userInfo')
+        .textContent =
+        '👤 ' +
+        currentUser.login +
+        ' [' +
+        currentUser.role +
+        ']';
+
+
+    /*
+     * OPERATOR nie dostaje przycisku
+     * backupu.
+     */
+
+    if (
+        currentUser.role !==
+        'ADMIN'
+    ) {
+
+        $('backupButton')
+            .style
+            .display =
+            'none';
+
+    } else {
+
+        $('backupButton')
+            .style
+            .display =
+            'block';
+
+    }
+
+
+    setMessage(
+        'Pobieranie danych...'
+    );
+
+
+    await loadData();
+
+}
+
+
+
+/* =========================================================
+   WYLOGOWANIE
+   ========================================================= */
+
+async function logout() {
+
+
+    const token =
+        getToken();
+
+
+    stopScanner();
+
+
+    try {
+
+        if (token) {
+
+            await api(
+                'logout',
+                {
+                    token:
+                        token
+                }
+            );
+
+        }
+
+    } catch (_) {}
+
+
+    clearSession();
+
+    scans = [];
+
+    currentAddress = null;
+
+    currentUser = null;
+
+
+    $('counter')
+        .textContent =
+        '0';
+
+
+    $('address')
+        .textContent =
+        'BRAK ADRESU';
+
+
+    $('lastCode')
+        .textContent =
+        'Ostatni skan: -';
+
+
+    showLogin();
+
+}
+
+
+
+/* =========================================================
+   CZYSZCZENIE SESJI
+   ========================================================= */
+
+function clearSession() {
+
+    sessionStorage.removeItem(
+        'wms_token'
+    );
+
+    sessionStorage.removeItem(
+        'wms_login'
+    );
+
+    sessionStorage.removeItem(
+        'wms_role'
+    );
+
+}
+
 
 
 /* =========================================================
    ADRES
    ========================================================= */
 
-function formatAddress(address) {
+function formatAddress(
+    address
+) {
+
 
     address =
         String(
@@ -700,9 +1773,9 @@ function formatAddress(address) {
     ) {
 
         return (
-            address.slice(0, 3) +
+            address.slice(0,3) +
             ' ' +
-            address.slice(3, 6)
+            address.slice(3,6)
         );
 
     }
@@ -713,14 +1786,20 @@ function formatAddress(address) {
 }
 
 
+
 /* =========================================================
    WALIDACJA ADRESU
    ========================================================= */
 
-function validAddress(address) {
+function validAddress(
+    address
+) {
+
 
     if (
-        !/^\d{6}$/.test(address)
+        !/^\d{6}$/.test(
+            address
+        )
     ) {
 
         return false;
@@ -730,36 +1809,52 @@ function validAddress(address) {
 
     const column =
         Number(
-            address.slice(0, 3)
+            address.slice(
+                0,
+                3
+            )
         );
 
 
     const place =
         Number(
-            address.slice(3, 6)
+            address.slice(
+                3,
+                6
+            )
         );
 
 
     return (
+
         column >= 601 &&
+
         column <= 614 &&
+
         place >= 1 &&
+
         place <= 107
+
     );
 
 }
+
 
 
 /* =========================================================
    KOMUNIKAT
    ========================================================= */
 
-function setMessage(text) {
+function setMessage(
+    text
+) {
 
-    $('message').textContent =
+    $('message')
+        .textContent =
         text;
 
 }
+
 
 
 /* =========================================================
@@ -768,6 +1863,7 @@ function setMessage(text) {
 
 function updateCounter() {
 
+
     scans =
         scans.filter(
             scan =>
@@ -775,28 +1871,31 @@ function updateCounter() {
         );
 
 
-    $('counter').textContent =
+    $('counter')
+        .textContent =
         scans.length;
 
 }
 
 
+
 /* =========================================================
-   POBIERANIE DANYCH
+   POBRANIE DANYCH
    ========================================================= */
 
 async function loadData() {
 
-    setMessage(
-        'Pobieranie danych...'
-    );
-
 
     try {
 
+
         const result =
             await api(
-                'getData'
+                'getData',
+                {
+                    token:
+                        getToken()
+                }
             );
 
 
@@ -822,7 +1921,8 @@ async function loadData() {
                 last.address;
 
 
-            $('address').textContent =
+            $('address')
+                .textContent =
                 formatAddress(
                     last.address
                 );
@@ -837,6 +1937,23 @@ async function loadData() {
 
     } catch (error) {
 
+
+        if (
+            error.message
+                .includes(
+                    'SESJA'
+                )
+        ) {
+
+            clearSession();
+
+            showLogin();
+
+            return;
+
+        }
+
+
         setMessage(
             'BŁĄD: ' +
             error.message
@@ -847,64 +1964,28 @@ async function loadData() {
 }
 
 
-/* =========================================================
-   ZATRZYMANIE APARATU
-   ========================================================= */
-
-function stopScanner() {
-
-    if (scanner) {
-
-        scanner
-            .stop()
-            .catch(() => {})
-            .finally(() => {
-
-                $('reader').style.display =
-                    'none';
-
-                cameraRunning =
-                    false;
-
-                scanner =
-                    null;
-
-            });
-
-    } else {
-
-        $('reader').style.display =
-            'none';
-
-        cameraRunning =
-            false;
-
-    }
-
-
-    takingDoubleScan =
-        false;
-
-    firstCode =
-        null;
-
-    firstDetectionTime =
-        0;
-
-
-    $('scanBtn').disabled =
-        false;
-
-}
-
 
 /* =========================================================
-   URUCHOMIENIE APARATU
+   APARAT
    ========================================================= */
 
 async function startScanner() {
 
-    if (cameraRunning) {
+
+    if (
+        !getToken()
+    ) {
+
+        showLogin();
+
+        return;
+
+    }
+
+
+    if (
+        cameraRunning
+    ) {
 
         beginDoubleCapture();
 
@@ -913,7 +1994,9 @@ async function startScanner() {
     }
 
 
-    $('reader').style.display =
+    $('reader')
+        .style
+        .display =
         'block';
 
 
@@ -923,6 +2006,7 @@ async function startScanner() {
 
 
     try {
+
 
         if (
             typeof Html5Qrcode ===
@@ -950,15 +2034,20 @@ async function startScanner() {
             },
 
             {
+
                 fps: 10,
 
                 qrbox: {
+
                     width: 280,
+
                     height: 180
+
                 },
 
                 aspectRatio:
                     1.777
+
             },
 
             decoded =>
@@ -985,6 +2074,7 @@ async function startScanner() {
 
     } catch (error) {
 
+
         stopScanner();
 
 
@@ -995,7 +2085,7 @@ async function startScanner() {
 
         alert(
             'Nie udało się uruchomić aparatu.\n\n' +
-            'Sprawdź uprawnienie aparatu oraz czy strona działa przez HTTPS.'
+            'Sprawdź uprawnienie aparatu oraz HTTPS.'
         );
 
     }
@@ -1003,11 +2093,13 @@ async function startScanner() {
 }
 
 
+
 /* =========================================================
    PODWÓJNY ODCZYT
    ========================================================= */
 
 function beginDoubleCapture() {
+
 
     if (
         takingDoubleScan
@@ -1030,7 +2122,8 @@ function beginDoubleCapture() {
         true;
 
 
-    $('scanBtn').disabled =
+    $('scanBtn')
+        .disabled =
         true;
 
 
@@ -1041,6 +2134,7 @@ function beginDoubleCapture() {
 }
 
 
+
 /* =========================================================
    ODCZYT KODU
    ========================================================= */
@@ -1048,6 +2142,7 @@ function beginDoubleCapture() {
 function handleDetectedCode(
     code
 ) {
+
 
     code =
         String(
@@ -1102,7 +2197,8 @@ function handleDetectedCode(
 
 
     if (
-        firstCode === second
+        firstCode ===
+        second
     ) {
 
         processAcceptedCode(
@@ -1111,7 +2207,9 @@ function handleDetectedCode(
 
     } else {
 
-        $('lastCode').textContent =
+
+        $('lastCode')
+            .textContent =
             'Kod nie został zapisany';
 
 
@@ -1124,7 +2222,8 @@ function handleDetectedCode(
             null;
 
 
-        $('scanBtn').disabled =
+        $('scanBtn')
+            .disabled =
             false;
 
     }
@@ -1132,13 +2231,15 @@ function handleDetectedCode(
 }
 
 
+
 /* =========================================================
-   ZAPIS KODU
+   ZAPIS SKANU
    ========================================================= */
 
 async function processAcceptedCode(
     code
 ) {
+
 
     firstCode =
         null;
@@ -1152,7 +2253,9 @@ async function processAcceptedCode(
         )
     ) {
 
-        $('lastCode').textContent =
+
+        $('lastCode')
+            .textContent =
             'Nie zapisano: ' +
             code;
 
@@ -1162,7 +2265,8 @@ async function processAcceptedCode(
         );
 
 
-        $('scanBtn').disabled =
+        $('scanBtn')
+            .disabled =
             false;
 
 
@@ -1176,7 +2280,8 @@ async function processAcceptedCode(
         id:
             (
                 crypto.randomUUID
-                    ? crypto.randomUUID()
+                    ?
+                    crypto.randomUUID()
                     :
                     String(
                         Date.now()
@@ -1198,10 +2303,31 @@ async function processAcceptedCode(
 
     try {
 
+
         const result =
             await api(
+
                 'saveScan',
-                scan
+
+                {
+
+                    token:
+                        getToken(),
+
+                    id:
+                        scan.id,
+
+                    code:
+                        scan.code,
+
+                    address:
+                        scan.address,
+
+                    date:
+                        scan.date
+
+                }
+
             );
 
 
@@ -1215,7 +2341,8 @@ async function processAcceptedCode(
             );
 
 
-            $('scanBtn').disabled =
+            $('scanBtn')
+                .disabled =
                 false;
 
 
@@ -1232,7 +2359,8 @@ async function processAcceptedCode(
         updateCounter();
 
 
-        $('lastCode').textContent =
+        $('lastCode')
+            .textContent =
             'Ostatni skan: ' +
             code;
 
@@ -1244,6 +2372,23 @@ async function processAcceptedCode(
 
     } catch (error) {
 
+
+        if (
+            error.message
+                .includes(
+                    'SESJA'
+                )
+        ) {
+
+            clearSession();
+
+            showLogin();
+
+            return;
+
+        }
+
+
         setMessage(
             'BŁĄD ZAPISU: ' +
             error.message
@@ -1252,17 +2397,94 @@ async function processAcceptedCode(
     }
 
 
-    $('scanBtn').disabled =
+    $('scanBtn')
+        .disabled =
         false;
 
 }
 
 
+
 /* =========================================================
-   OKNO ADRESU
+   ZATRZYMANIE APARATU
+   ========================================================= */
+
+function stopScanner() {
+
+
+    if (scanner) {
+
+
+        scanner
+            .stop()
+            .catch(
+                () => {}
+            )
+            .finally(
+                () => {
+
+                    $('reader')
+                        .style
+                        .display =
+                        'none';
+
+                    cameraRunning =
+                        false;
+
+                    scanner =
+                        null;
+
+                }
+            );
+
+
+    } else {
+
+
+        $('reader')
+            .style
+            .display =
+            'none';
+
+
+        cameraRunning =
+            false;
+
+    }
+
+
+    takingDoubleScan =
+        false;
+
+
+    firstCode =
+        null;
+
+
+    firstDetectionTime =
+        0;
+
+
+    if (
+        $('scanBtn')
+    ) {
+
+        $('scanBtn')
+            .disabled =
+            false;
+
+    }
+
+}
+
+
+
+/* =========================================================
+   ADRES — OKNO
    ========================================================= */
 
 function showAddressDialog() {
+
 
     const pending =
         scans.filter(
@@ -1277,7 +2499,7 @@ function showAddressDialog() {
     ) {
 
         alert(
-            'Brak kodów oczekujących na adres'
+            'Brak kodów oczekujących na adres.'
         );
 
 
@@ -1321,11 +2543,13 @@ function showAddressDialog() {
 }
 
 
+
 /* =========================================================
    PRZYPISANIE ADRESU
    ========================================================= */
 
 async function assignAddressFromDialog() {
+
 
     const address =
         $('addressInput')
@@ -1340,7 +2564,7 @@ async function assignAddressFromDialog() {
     ) {
 
         alert(
-            'Adres musi mieć format 601001 i zakres 601001–614107'
+            'Adres musi mieć format 601001 i zakres 601001–614107.'
         );
 
 
@@ -1351,13 +2575,22 @@ async function assignAddressFromDialog() {
 
     try {
 
+
         const result =
             await api(
+
                 'assignAddress',
+
                 {
+
+                    token:
+                        getToken(),
+
                     address:
                         address
+
                 }
+
             );
 
 
@@ -1382,13 +2615,15 @@ async function assignAddressFromDialog() {
             address;
 
 
-        $('address').textContent =
+        $('address')
+            .textContent =
             formatAddress(
                 address
             );
 
 
-        $('lastCode').textContent =
+        $('lastCode')
+            .textContent =
             'Przypisano ' +
             result.count +
             ' kodów';
@@ -1406,6 +2641,23 @@ async function assignAddressFromDialog() {
 
     } catch (error) {
 
+
+        if (
+            error.message
+                .includes(
+                    'SESJA'
+                )
+        ) {
+
+            clearSession();
+
+            showLogin();
+
+            return;
+
+        }
+
+
         alert(
             error.message
         );
@@ -1415,11 +2667,13 @@ async function assignAddressFromDialog() {
 }
 
 
+
 /* =========================================================
    PODGLĄD
    ========================================================= */
 
 function showPreview() {
+
 
     hideAll();
 
@@ -1492,6 +2746,7 @@ function showPreview() {
     keys.forEach(
         address => {
 
+
             const header =
                 document.createElement(
                     'div'
@@ -1518,6 +2773,7 @@ function showPreview() {
             groups[address].forEach(
                 scan => {
 
+
                     const card =
                         document.createElement(
                             'div'
@@ -1542,17 +2798,18 @@ function showPreview() {
                         scan.code;
 
 
-                    const addr =
+                    const addressElement =
                         document.createElement(
                             'div'
                         );
 
 
-                    addr.className =
+                    addressElement.className =
                         'card-address';
 
 
-                    addr.textContent =
+                    addressElement.textContent =
+
                         scan.address
                             ?
                             'Adres: ' +
@@ -1604,6 +2861,21 @@ function showPreview() {
                         'danger';
 
 
+                    /*
+                     * Tylko ADMIN może usuwać.
+                     */
+
+                    if (
+                        getRole() !==
+                        'ADMIN'
+                    ) {
+
+                        remove.style.display =
+                            'none';
+
+                    }
+
+
                     remove.onclick =
                         () =>
                             deleteScanConfirm(
@@ -1619,7 +2891,7 @@ function showPreview() {
 
                     card.append(
                         code,
-                        addr,
+                        addressElement,
                         buttons
                     );
 
@@ -1637,11 +2909,15 @@ function showPreview() {
 }
 
 
+
 /* =========================================================
    EDYCJA
    ========================================================= */
 
-function editScan(scan) {
+function editScan(
+    scan
+) {
+
 
     openDialog(
 
@@ -1686,6 +2962,7 @@ function editScan(scan) {
 }
 
 
+
 /* =========================================================
    ZAPIS EDYCJI
    ========================================================= */
@@ -1693,6 +2970,7 @@ function editScan(scan) {
 async function saveEdit(
     scan
 ) {
+
 
     const code =
         $('editCode')
@@ -1706,12 +2984,10 @@ async function saveEdit(
             .trim();
 
 
-    if (
-        !code
-    ) {
+    if (!code) {
 
         alert(
-            'Wpisz kod'
+            'Wpisz kod.'
         );
 
 
@@ -1727,7 +3003,7 @@ async function saveEdit(
     ) {
 
         alert(
-            'Nieprawidłowy adres'
+            'Nieprawidłowy adres.'
         );
 
 
@@ -1738,10 +3014,17 @@ async function saveEdit(
 
     try {
 
+
         const result =
             await api(
+
                 'updateScan',
+
                 {
+
+                    token:
+                        getToken(),
+
                     id:
                         scan.id,
 
@@ -1750,7 +3033,9 @@ async function saveEdit(
 
                     address:
                         address
+
                 }
+
             );
 
 
@@ -1760,7 +3045,7 @@ async function saveEdit(
 
             alert(
                 result.message ||
-                'Nie udało się zapisać'
+                'Nie udało się zapisać.'
             );
 
 
@@ -1782,7 +3067,6 @@ async function saveEdit(
             local.code =
                 code;
 
-
             local.address =
                 address;
 
@@ -1791,16 +3075,31 @@ async function saveEdit(
 
         closeDialog();
 
-
         showPreview();
 
-
         setMessage(
-            'Zapisano zmianę'
+            'Zapisano zmianę.'
         );
 
 
     } catch (error) {
+
+
+        if (
+            error.message
+                .includes(
+                    'SESJA'
+                )
+        ) {
+
+            clearSession();
+
+            showLogin();
+
+            return;
+
+        }
+
 
         alert(
             error.message
@@ -1811,6 +3110,7 @@ async function saveEdit(
 }
 
 
+
 /* =========================================================
    USUWANIE
    ========================================================= */
@@ -1818,6 +3118,22 @@ async function saveEdit(
 function deleteScanConfirm(
     scan
 ) {
+
+
+    if (
+        getRole() !==
+        'ADMIN'
+    ) {
+
+        alert(
+            'Brak uprawnień.'
+        );
+
+
+        return;
+
+    }
+
 
     openDialog(
 
@@ -1851,6 +3167,7 @@ function deleteScanConfirm(
 }
 
 
+
 /* =========================================================
    WYKONANIE USUNIĘCIA
    ========================================================= */
@@ -1859,14 +3176,24 @@ async function performDelete(
     scan
 ) {
 
+
     try {
 
+
         await api(
+
             'deleteScan',
+
             {
+
+                token:
+                    getToken(),
+
                 id:
                     scan.id
+
             }
+
         );
 
 
@@ -1883,16 +3210,31 @@ async function performDelete(
 
         closeDialog();
 
-
         showPreview();
 
-
         setMessage(
-            'Usunięto skan'
+            'Usunięto skan.'
         );
 
 
     } catch (error) {
+
+
+        if (
+            error.message
+                .includes(
+                    'SESJA'
+                )
+        ) {
+
+            clearSession();
+
+            showLogin();
+
+            return;
+
+        }
+
 
         alert(
             error.message
@@ -1903,11 +3245,13 @@ async function performDelete(
 }
 
 
+
 /* =========================================================
    SZUKANIE
    ========================================================= */
 
 function showSearch() {
+
 
     hideAll();
 
@@ -1925,11 +3269,13 @@ function showSearch() {
 }
 
 
+
 /* =========================================================
    WYKONANIE SZUKANIA
    ========================================================= */
 
 function runSearch() {
+
 
     const query =
         $('searchInput')
@@ -1937,13 +3283,11 @@ function runSearch() {
             .trim();
 
 
-    if (
-        !query
-    ) {
+    if (!query) {
 
         $('searchResult')
             .textContent =
-            'Wpisz fragment kodu i kliknij SZUKAJ';
+            'Wpisz fragment kodu i kliknij SZUKAJ.';
 
 
         return;
@@ -1991,7 +3335,9 @@ function runSearch() {
             index
         ) => {
 
+
             html +=
+
                 '<div class="card">' +
 
                 '<div class="card-code">' +
@@ -2039,11 +3385,13 @@ function runSearch() {
 }
 
 
+
 /* =========================================================
    GOOGLE
    ========================================================= */
 
 function showGoogle() {
+
 
     hideAll();
 
@@ -2057,11 +3405,13 @@ function showGoogle() {
 }
 
 
+
 /* =========================================================
    PONOWNE POBRANIE
    ========================================================= */
 
 async function reloadData() {
+
 
     $('googleStatus')
         .textContent =
@@ -2073,9 +3423,10 @@ async function reloadData() {
 
     $('googleStatus')
         .textContent =
-        'Dane pobrane';
+        'Dane pobrane.';
 
 }
+
 
 
 /* =========================================================
@@ -2084,6 +3435,21 @@ async function reloadData() {
 
 async function backupData() {
 
+
+    if (
+        getRole() !==
+        'ADMIN'
+    ) {
+
+        $('googleStatus')
+            .textContent =
+            'BRAK UPRAWNIEŃ';
+
+        return;
+
+    }
+
+
     $('googleStatus')
         .textContent =
         'Tworzenie kopii...';
@@ -2091,9 +3457,19 @@ async function backupData() {
 
     try {
 
+
         const result =
             await api(
-                'exportJson'
+
+                'exportJson',
+
+                {
+
+                    token:
+                        getToken()
+
+                }
+
             );
 
 
@@ -2105,6 +3481,7 @@ async function backupData() {
 
     } catch (error) {
 
+
         $('googleStatus')
             .textContent =
             'BŁĄD: ' +
@@ -2115,11 +3492,13 @@ async function backupData() {
 }
 
 
+
 /* =========================================================
    NAWIGACJA
    ========================================================= */
 
 function hideAll() {
+
 
     [
 
@@ -2143,7 +3522,13 @@ function hideAll() {
 }
 
 
+
+/* =========================================================
+   POWRÓT DO GŁÓWNEGO
+   ========================================================= */
+
 function showMain() {
+
 
     hideAll();
 
@@ -2157,6 +3542,7 @@ function showMain() {
 }
 
 
+
 /* =========================================================
    MODAL
    ========================================================= */
@@ -2166,6 +3552,7 @@ function openDialog(
     body,
     buttons
 ) {
+
 
     $('dialogTitle')
         .textContent =
@@ -2186,9 +3573,8 @@ function openDialog(
 
 
     buttons.forEach(
-        (
-            item
-        ) => {
+        item => {
+
 
             const button =
                 document.createElement(
@@ -2221,7 +3607,13 @@ function openDialog(
 }
 
 
+
+/* =========================================================
+   ZAMKNIĘCIE MODALA
+   ========================================================= */
+
 function closeDialog() {
+
 
     $('modal')
         .classList
@@ -2232,6 +3624,7 @@ function closeDialog() {
 }
 
 
+
 /* =========================================================
    OCHRONA HTML
    ========================================================= */
@@ -2240,41 +3633,53 @@ function escapeHtml(
     value
 ) {
 
+
     return String(
         value || ''
     )
 
-        .replaceAll(
-            '&',
-            '&amp;'
-        )
+    .replaceAll(
+        '&',
+        '&amp;'
+    )
 
-        .replaceAll(
-            '<',
-            '&lt;'
-        )
+    .replaceAll(
+        '<',
+        '&lt;'
+    )
 
-        .replaceAll(
-            '>',
-            '&gt;'
-        )
+    .replaceAll(
+        '>',
+        '&gt;'
+    )
 
-        .replaceAll(
-            '"',
-            '&quot;'
-        )
+    .replaceAll(
+        '"',
+        '&quot;'
+    )
 
-        .replaceAll(
-            "'",
-            '&#039;'
-        );
+    .replaceAll(
+        "'",
+        '&#039;'
+    );
 
 }
+
 
 
 /* =========================================================
    PRZYCISKI
    ========================================================= */
+
+$('loginButton')
+    .onclick =
+    performLogin;
+
+
+$('logoutButton')
+    .onclick =
+    logout;
+
 
 $('scanBtn')
     .onclick =
@@ -2301,13 +3706,60 @@ $('googleBtn')
     showGoogle;
 
 
+
 /* =========================================================
-   START
+   ENTER — LOGIN
+   ========================================================= */
+
+$('loginInput')
+    .addEventListener(
+        'keydown',
+        event => {
+
+            if (
+                event.key ===
+                'Enter'
+            ) {
+
+                $('passwordInput')
+                    .focus();
+
+            }
+
+        }
+    );
+
+
+$('passwordInput')
+    .addEventListener(
+        'keydown',
+        event => {
+
+            if (
+                event.key ===
+                'Enter'
+            ) {
+
+                performLogin();
+
+            }
+
+        }
+    );
+
+
+
+/* =========================================================
+   START APLIKACJI
    ========================================================= */
 
 window.addEventListener(
     'load',
-    loadData
+    () => {
+
+        checkExistingSession();
+
+    }
 );
 
 
@@ -2318,5 +3770,7 @@ window.addEventListener(
 
 </script>
 
+
 </body>
+
 </html>
