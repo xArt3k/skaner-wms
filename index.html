@@ -1839,9 +1839,13 @@ async function showLoggedIn() {
     }
 
 
-    await loadData();
+    ensureCameraPreview();
 
-        ensureCameraPreview();
+    try {
+        await loadData();
+    } catch (error) {
+        console.error('loadData:', error);
+    }
 
 }
 
@@ -2235,12 +2239,8 @@ async function startScanner() {
         return true;
     }
 
-    // Kamera działa w tle — użytkownik NIE widzi podglądu
-    // ani procesu wykonywania dwóch zdjęć.
     const reader = $('reader');
     const video = $('cameraVideo');
-
-    reader.style.display = 'none';
 
     try {
 
@@ -2340,7 +2340,7 @@ async function armScan() {
     button.disabled = true;
 
     setMessage(
-        'Skanowanie...'
+        'Gotowy'
     );
 
     try {
@@ -2354,27 +2354,25 @@ async function armScan() {
             return;
         }
 
-        // Stabilizacja obrazu po uruchomieniu kamery.
-        await wait(1000);
+        // Stabilizacja obrazu i ostrości po uruchomieniu kamery.
+        await wait(1200);
 
-        /*
-         * ZDJĘCIE 1
-         * Użytkownik niczego nie widzi.
-         */
+        // Dwie niezależne próby odczytu. W każdej próbie robimy
+        // serię bardzo szybkich klatek, ale operator widzi tylko
+        // końcowy rezultat. Dzięki temu pojedyncze rozmycie klatki
+        // nie powoduje fałszywego 'SKAN NIEUDANY'.
         const first =
-            captureAndDecode(
-                $('cameraVideo')
+            await decodeAttempt(
+                $('cameraVideo'),
+                1400
             );
 
-        /*
-         * ZDJĘCIE 2
-         * Robione osobno, chwilę po pierwszym.
-         */
-        await wait(750);
+        await wait(300);
 
         const second =
-            captureAndDecode(
-                $('cameraVideo')
+            await decodeAttempt(
+                $('cameraVideo'),
+                1400
             );
 
         console.log(
@@ -2400,10 +2398,6 @@ async function armScan() {
             beep();
             vibrateSuccess();
 
-            setMessage(
-                '✓ ZGODNY — ZAPISYWANIE...'
-            );
-
             await processAcceptedCode(
                 second
             );
@@ -2418,7 +2412,7 @@ async function armScan() {
                 'Ostatni skan: -';
 
             setMessage(
-                '✗ NIEZGODNOŚĆ — POWTÓRZ SKANOWANIE'
+                'SKAN NIEUDANY'
             );
 
             processingScan = false;
@@ -2431,7 +2425,7 @@ async function armScan() {
         console.error(error);
 
         setMessage(
-            '✗ NIEZGODNOŚĆ — POWTÓRZ SKANOWANIE'
+            'SKAN NIEUDANY'
         );
 
         processingScan = false;
@@ -2445,6 +2439,25 @@ async function armScan() {
 /* =========================================================
    ZDJĘCIE + ODCZYT QR — W PAMIĘCI, BEZ POKAZYWANIA
    ========================================================= */
+
+async function decodeAttempt(video, duration) {
+
+    const started = Date.now();
+
+    while (Date.now() - started < duration) {
+
+        const value = captureAndDecode(video);
+
+        if (value) {
+            return value;
+        }
+
+        await wait(180);
+    }
+
+    return null;
+}
+
 
 function captureAndDecode(video) {
 
