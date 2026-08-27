@@ -3,391 +3,2320 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
 <meta name="theme-color" content="#ffffff">
+
 <title>SKANER WMS</title>
 
 <script src="https://unpkg.com/html5-qrcode" defer></script>
 
 <style>
-* { box-sizing: border-box; }
-html,body{margin:0;padding:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;background:#fff;color:#111}
-body{padding:16px}.app{width:100%;max-width:720px;margin:0 auto}
-.top{display:flex;align-items:center;gap:10px}.title{flex:1;font-size:24px;font-weight:700}
-.counter{background:#000;color:#fff;padding:8px 12px;font-size:18px;font-weight:700;min-width:42px;text-align:center}
-.label{margin-top:15px;font-size:12px}.address{margin-top:4px;background:#E8F5E9;padding:12px;font-size:20px;font-weight:700;min-height:48px}
-#reader{display:none;width:100%;margin-top:10px;border:0;overflow:hidden}
-.last{margin-top:10px;font-size:16px;font-weight:700;min-height:24px}
-button{width:100%;min-height:52px;margin-top:8px;border:1px solid #bbb;border-radius:4px;background:#efefef;color:#111;font-size:16px;font-weight:600;cursor:pointer}
-button:active{transform:scale(.99)}button:disabled{opacity:.55}
-.message{margin-top:5px;font-size:14px;min-height:22px}.hidden{display:none!important}
-.section{margin-top:14px}.card{border:1px solid #ddd;padding:12px;margin-top:8px}
-.card-head{background:#E8F5E9;padding:12px;font-size:20px;font-weight:700}.card-code{font-size:17px;font-weight:700}
-.card-address{margin-top:5px;font-size:15px}.row-buttons{display:flex;gap:8px}.row-buttons button{flex:1}
-.back{margin-bottom:10px}.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;justify-content:center;z-index:1000}
-.dialog{background:#fff;width:100%;max-width:720px;padding:18px;border-radius:12px 12px 0 0}
-.dialog h2{margin:0 0 10px;font-size:21px}.dialog p{margin:8px 0;white-space:pre-line}
-input{width:100%;min-height:48px;padding:10px;font-size:18px;border:1px solid #aaa;border-radius:4px}
-.dialog-buttons{display:flex;gap:8px}.dialog-buttons button{flex:1}.danger{background:#ffebee}
-@media(min-width:700px){body{padding-top:28px}.modal{align-items:center}.dialog{border-radius:10px}}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    min-height: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #ffffff;
+    color: #111111;
+}
+
+body {
+    padding: 16px;
+}
+
+.app {
+    width: 100%;
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+/* =========================
+   GÓRA
+   ========================= */
+
+.top {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.title {
+    flex: 1;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.counter {
+    background: #000000;
+    color: #ffffff;
+    padding: 8px 12px;
+    font-size: 18px;
+    font-weight: 700;
+    min-width: 42px;
+    text-align: center;
+}
+
+/* =========================
+   ADRES
+   ========================= */
+
+.label {
+    margin-top: 15px;
+    font-size: 12px;
+}
+
+.address {
+    margin-top: 4px;
+    background: #E8F5E9;
+    padding: 12px;
+    font-size: 20px;
+    font-weight: 700;
+    min-height: 48px;
+}
+
+/* =========================
+   SKANER
+   ========================= */
+
+#reader {
+    display: none;
+    width: 100%;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+#reader video {
+    width: 100% !important;
+    height: auto !important;
+}
+
+/* =========================
+   OSTATNI SKAN
+   ========================= */
+
+.last {
+    margin-top: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    min-height: 24px;
+}
+
+/* =========================
+   PRZYCISKI
+   ========================= */
+
+button {
+    width: 100%;
+    min-height: 52px;
+    margin-top: 8px;
+    border: 1px solid #bbbbbb;
+    border-radius: 4px;
+    background: #efefef;
+    color: #111111;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+button:active {
+    transform: scale(0.99);
+}
+
+button:disabled {
+    opacity: 0.55;
+}
+
+/* =========================
+   KOMUNIKAT
+   ========================= */
+
+.message {
+    margin-top: 5px;
+    font-size: 14px;
+    min-height: 22px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* =========================
+   SEKCJE
+   ========================= */
+
+.section {
+    margin-top: 14px;
+}
+
+.card {
+    border: 1px solid #dddddd;
+    padding: 12px;
+    margin-top: 8px;
+}
+
+.card-head {
+    background: #E8F5E9;
+    padding: 12px;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.card-code {
+    font-size: 17px;
+    font-weight: 700;
+}
+
+.card-address {
+    margin-top: 5px;
+    font-size: 15px;
+}
+
+.row-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.row-buttons button {
+    flex: 1;
+}
+
+.back {
+    margin-bottom: 10px;
+}
+
+/* =========================
+   OKNO
+   ========================= */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.dialog {
+    background: #ffffff;
+    width: 100%;
+    max-width: 720px;
+    padding: 18px;
+    border-radius: 12px 12px 0 0;
+}
+
+.dialog h2 {
+    margin: 0 0 10px;
+    font-size: 21px;
+}
+
+.dialog p {
+    margin: 8px 0;
+    white-space: pre-line;
+}
+
+input {
+    width: 100%;
+    min-height: 48px;
+    padding: 10px;
+    font-size: 18px;
+    border: 1px solid #aaaaaa;
+    border-radius: 4px;
+}
+
+.dialog-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.dialog-buttons button {
+    flex: 1;
+}
+
+.danger {
+    background: #ffebee;
+}
+
+/* =========================
+   DESKTOP
+   ========================= */
+
+@media (min-width: 700px) {
+
+    body {
+        padding-top: 28px;
+    }
+
+    .modal {
+        align-items: center;
+    }
+
+    .dialog {
+        border-radius: 10px;
+    }
+
+}
+
 </style>
 </head>
 
+
 <body>
+
 <div class="app">
-  <div id="mainView">
-    <div class="top">
-      <div class="title">SKANER WMS</div>
-      <div class="counter" id="counter">0</div>
+
+    <!-- =========================
+         EKRAN GŁÓWNY
+         ========================= -->
+
+    <div id="mainView">
+
+        <div class="top">
+
+            <div class="title">
+                SKANER WMS
+            </div>
+
+            <div
+                class="counter"
+                id="counter">
+                0
+            </div>
+
+        </div>
+
+
+        <div class="label">
+            AKTUALNY ADRES
+        </div>
+
+
+        <div
+            class="address"
+            id="address">
+
+            BRAK ADRESU
+
+        </div>
+
+
+        <div
+            id="reader">
+        </div>
+
+
+        <div
+            class="last"
+            id="lastCode">
+
+            Ostatni skan: -
+
+        </div>
+
+
+        <button id="scanBtn">
+            SKANUJ KOD
+        </button>
+
+
+        <button id="addressBtn">
+            DAJ ADRES
+        </button>
+
+
+        <button id="previewBtn">
+            PODGLĄD
+        </button>
+
+
+        <button id="searchBtn">
+            SZUKAJ
+        </button>
+
+
+        <button id="googleBtn">
+            ⚙️ GOOGLE
+        </button>
+
+
+        <div
+            class="message"
+            id="message">
+
+            Gotowy
+
+        </div>
+
     </div>
 
-    <div class="label">AKTUALNY ADRES</div>
-    <div class="address" id="address">BRAK ADRESU</div>
 
-    <div id="reader"></div>
+    <!-- =========================
+         PODGLĄD
+         ========================= -->
 
-    <div class="last" id="lastCode">Ostatni skan: -</div>
+    <div
+        id="previewView"
+        class="hidden">
 
-    <button id="scanBtn">SKANUJ KOD</button>
-    <button id="addressBtn">DAJ ADRES</button>
-    <button id="previewBtn">PODGLĄD</button>
-    <button id="searchBtn">SZUKAJ</button>
-    <button id="googleBtn">⚙️ GOOGLE</button>
+        <button
+            class="back"
+            onclick="showMain()">
 
-    <div class="message" id="message">Gotowy</div>
-  </div>
+            ← POWRÓT
 
-  <div id="previewView" class="hidden">
-    <button class="back" onclick="showMain()">← POWRÓT</button>
-    <div class="title">PODGLĄD</div>
-    <div id="previewContainer" class="section"></div>
-  </div>
+        </button>
 
-  <div id="searchView" class="hidden">
-    <button class="back" onclick="showMain()">← POWRÓT</button>
-    <div class="title">SZUKAJ</div>
-    <div class="section">
-      <input id="searchInput" placeholder="Wpisz fragment kodu">
-      <button onclick="runSearch()">SZUKAJ</button>
+
+        <div class="title">
+            PODGLĄD
+        </div>
+
+
+        <div
+            id="previewContainer"
+            class="section">
+
+        </div>
+
     </div>
-    <div id="searchResult" class="section"></div>
-  </div>
 
-  <div id="googleView" class="hidden">
-    <button class="back" onclick="showMain()">← POWRÓT</button>
-    <div class="title">⚙️ GOOGLE</div>
-    <div class="section">
-      <p>Połączenie z Google Drive działa przez Google Apps Script.</p>
-      <button onclick="reloadData()">☁️ POBIERZ DANE</button>
-      <button onclick="backupData()">☁️ UTWÓRZ KOPIĘ JSON</button>
-      <div id="googleStatus" class="message">Gotowy</div>
+
+    <!-- =========================
+         SZUKANIE
+         ========================= -->
+
+    <div
+        id="searchView"
+        class="hidden">
+
+        <button
+            class="back"
+            onclick="showMain()">
+
+            ← POWRÓT
+
+        </button>
+
+
+        <div class="title">
+            SZUKAJ
+        </div>
+
+
+        <div class="section">
+
+            <input
+                id="searchInput"
+                placeholder="Wpisz fragment kodu">
+
+
+            <button
+                onclick="runSearch()">
+
+                SZUKAJ
+
+            </button>
+
+        </div>
+
+
+        <div
+            id="searchResult"
+            class="section">
+
+        </div>
+
     </div>
-  </div>
+
+
+    <!-- =========================
+         GOOGLE
+         ========================= -->
+
+    <div
+        id="googleView"
+        class="hidden">
+
+        <button
+            class="back"
+            onclick="showMain()">
+
+            ← POWRÓT
+
+        </button>
+
+
+        <div class="title">
+            ⚙️ GOOGLE
+        </div>
+
+
+        <div class="section">
+
+            <p>
+                Połączenie z Google Drive działa przez
+                Google Apps Script.
+            </p>
+
+
+            <button
+                onclick="reloadData()">
+
+                ☁️ POBIERZ DANE
+
+            </button>
+
+
+            <button
+                onclick="backupData()">
+
+                ☁️ UTWÓRZ KOPIĘ JSON
+
+            </button>
+
+
+            <div
+                id="googleStatus"
+                class="message">
+
+                Gotowy
+
+            </div>
+
+        </div>
+
+    </div>
+
 </div>
 
-<div id="modal" class="modal hidden">
-  <div class="dialog">
-    <h2 id="dialogTitle"></h2>
-    <div id="dialogBody"></div>
-    <div class="dialog-buttons" id="dialogButtons"></div>
-  </div>
+
+<!-- =========================
+     MODAL
+     ========================= -->
+
+<div
+    id="modal"
+    class="modal hidden">
+
+    <div class="dialog">
+
+        <h2 id="dialogTitle"></h2>
+
+        <div id="dialogBody"></div>
+
+        <div
+            class="dialog-buttons"
+            id="dialogButtons">
+
+        </div>
+
+    </div>
+
 </div>
+
 
 <script>
-/*
- * WKLEJ TUTAJ SWÓJ LINK /exec DO GOOGLE APPS SCRIPT.
- */
+
+/* =========================================================
+   GOOGLE APPS SCRIPT
+   =========================================================
+
+   TO JEST TWÓJ BACKEND.
+
+   Nie zmieniaj adresu, jeżeli jest taki jak poniżej.
+   ========================================================= */
+
 const API_URL =
-  'https://script.google.com/macros/s/AKfycbxnalja50Ryc5H7t2vOBYe6c9zXN6pdOVMa6tXqne5jv3KQOS7laoo_JcEUUSlL08prrA/exec';
+    'https://script.google.com/macros/s/AKfycbxnalja50Ryc5H7t2vOBYe6c9zXN6pdOVMa6tXqne5jv3KQOS7laoo_JcEUUSlL08prrA/exec';
 
-let scans=[],scanner=null,cameraRunning=false,takingDoubleScan=false;
-let firstCode=null,firstDetectionTime=0,currentAddress=null;
 
-const $=id=>document.getElementById(id);
+/* =========================================================
+   ZMIENNE
+   ========================================================= */
 
-function api(action, params={}) {
-  return new Promise((resolve,reject)=>{
-    const callback='cb_'+Date.now()+'_'+Math.floor(Math.random()*100000);
-    const script=document.createElement('script');
+let scans = [];
 
-    const query=new URLSearchParams();
-    query.set('action',action);
-    query.set('callback',callback);
+let scanner = null;
 
-    Object.keys(params).forEach(k=>{
-      if(params[k] !== undefined && params[k] !== null)
-        query.set(k,String(params[k]));
+let cameraRunning = false;
+
+let takingDoubleScan = false;
+
+let firstCode = null;
+
+let firstDetectionTime = 0;
+
+let currentAddress = null;
+
+
+/* =========================================================
+   SKRÓT
+   ========================================================= */
+
+const $ = id =>
+    document.getElementById(id);
+
+
+/* =========================================================
+   KOMUNIKACJA Z GOOGLE APPS SCRIPT
+   ========================================================= */
+
+function api(action, params = {}) {
+
+    return new Promise((resolve, reject) => {
+
+        const callback =
+            'cb_' +
+            Date.now() +
+            '_' +
+            Math.floor(
+                Math.random() * 100000
+            );
+
+
+        const script =
+            document.createElement(
+                'script'
+            );
+
+
+        const query =
+            new URLSearchParams();
+
+
+        query.set(
+            'action',
+            action
+        );
+
+
+        query.set(
+            'callback',
+            callback
+        );
+
+
+        Object.keys(params).forEach(
+            key => {
+
+                if (
+                    params[key] !== undefined &&
+                    params[key] !== null
+                ) {
+
+                    query.set(
+                        key,
+                        String(params[key])
+                    );
+
+                }
+
+            }
+        );
+
+
+        window[callback] =
+            data => {
+
+                delete window[callback];
+
+                script.remove();
+
+
+                if (
+                    data &&
+                    data.ok === false
+                ) {
+
+                    reject(
+                        new Error(
+                            data.message ||
+                            'Błąd'
+                        )
+                    );
+
+                    return;
+
+                }
+
+
+                resolve(data);
+
+            };
+
+
+        script.onerror = () => {
+
+            delete window[callback];
+
+            script.remove();
+
+
+            reject(
+                new Error(
+                    'Brak połączenia z Google Apps Script.'
+                )
+            );
+
+        };
+
+
+        script.src =
+            API_URL +
+            '?' +
+            query.toString();
+
+
+        document.body.appendChild(
+            script
+        );
+
     });
 
-    window[callback]=data=>{
-      delete window[callback];
-      script.remove();
-      if(data && data.ok === false) reject(new Error(data.message||'Błąd'));
-      else resolve(data);
-    };
-
-    script.onerror=()=>{
-      delete window[callback];
-      script.remove();
-      reject(new Error('Brak połączenia z Google Apps Script.'));
-    };
-
-    script.src=API_URL+'?'+query.toString();
-    document.body.appendChild(script);
-  });
 }
 
-function formatAddress(a){
-  a=String(a||'');
-  return a.length===6?a.slice(0,3)+' '+a.slice(3,6):a;
-}
-function validAddress(a){
-  if(!/^\d{6}$/.test(a))return false;
-  const c=Number(a.slice(0,3)),p=Number(a.slice(3,6));
-  return c>=601&&c<=614&&p>=1&&p<=107;
-}
-function setMessage(t){$('message').textContent=t}
-function updateCounter(){
-  scans=scans.filter(s=>!s.deleted);
-  $('counter').textContent=scans.length;
-}
 
-async function loadData(){
-  setMessage('Pobieranie danych...');
-  try{
-    const r=await api('getData');
-    scans=r.scans||[];
-    updateCounter();
-    const last=[...scans].reverse().find(s=>s.address);
-    if(last){currentAddress=last.address;$('address').textContent=formatAddress(last.address)}
-    setMessage('Gotowy');
-  }catch(e){setMessage('BŁĄD: '+e.message)}
-}
+/* =========================================================
+   ADRES
+   ========================================================= */
 
-function stopScanner(){
-  if(scanner){
-    scanner.stop().catch(()=>{}).finally(()=>{
-      $('reader').style.display='none';cameraRunning=false;scanner=null;
-    });
-  }else{
-    $('reader').style.display='none';cameraRunning=false;
-  }
-  takingDoubleScan=false;firstCode=null;firstDetectionTime=0;
-  $('scanBtn').disabled=false;
-}
+function formatAddress(address) {
 
-async function startScanner(){
-  if(cameraRunning){beginDoubleCapture();return}
+    address =
+        String(
+            address || ''
+        );
 
-  $('reader').style.display='block';
-  setMessage('Uruchamianie aparatu...');
 
-  try{
-    if(typeof Html5Qrcode==='undefined'){
-      throw new Error('Biblioteka skanera jeszcze się ładuje.');
+    if (
+        address.length === 6
+    ) {
+
+        return (
+            address.slice(0, 3) +
+            ' ' +
+            address.slice(3, 6)
+        );
+
     }
 
-    scanner=new Html5Qrcode('reader');
 
-    await scanner.start(
-      {facingMode:'environment'},
-      {fps:10,qrbox:{width:280,height:180},aspectRatio:1.777},
-      decoded=>handleDetectedCode(decoded),
-      ()=>{}
+    return address;
+
+}
+
+
+/* =========================================================
+   WALIDACJA ADRESU
+   ========================================================= */
+
+function validAddress(address) {
+
+    if (
+        !/^\d{6}$/.test(address)
+    ) {
+
+        return false;
+
+    }
+
+
+    const column =
+        Number(
+            address.slice(0, 3)
+        );
+
+
+    const place =
+        Number(
+            address.slice(3, 6)
+        );
+
+
+    return (
+        column >= 601 &&
+        column <= 614 &&
+        place >= 1 &&
+        place <= 107
     );
 
-    cameraRunning=true;
-    setMessage('Gotowy');
-    beginDoubleCapture();
-  }catch(e){
-    stopScanner();
-    setMessage('Nie udało się uruchomić aparatu.');
-    alert('Nie udało się uruchomić aparatu. Sprawdź uprawnienie aparatu oraz czy strona działa przez HTTPS.');
-  }
 }
 
-function beginDoubleCapture(){
-  if(takingDoubleScan)return;
-  firstCode=null;firstDetectionTime=0;takingDoubleScan=true;
-  $('scanBtn').disabled=true;setMessage('Skanowanie...');
+
+/* =========================================================
+   KOMUNIKAT
+   ========================================================= */
+
+function setMessage(text) {
+
+    $('message').textContent =
+        text;
+
 }
 
-function handleDetectedCode(code){
-  code=String(code||'').trim();
-  if(!takingDoubleScan||!code)return;
 
-  if(firstCode===null){
-    firstCode=code;firstDetectionTime=Date.now();return;
-  }
+/* =========================================================
+   LICZNIK
+   ========================================================= */
 
-  if(Date.now()-firstDetectionTime<150)return;
+function updateCounter() {
 
-  const second=code;
-  takingDoubleScan=false;
+    scans =
+        scans.filter(
+            scan =>
+                !scan.deleted
+        );
 
-  if(firstCode===second) processAcceptedCode(firstCode);
-  else{
-    $('lastCode').textContent='Kod nie został zapisany';
-    setMessage('ROZBIEŻNOŚĆ — PONÓW SKAN');
-    firstCode=null;$('scanBtn').disabled=false;
-  }
+
+    $('counter').textContent =
+        scans.length;
+
 }
 
-async function processAcceptedCode(code){
-  firstCode=null;
 
-  if(scans.some(s=>!s.deleted&&s.code===code)){
-    $('lastCode').textContent='Nie zapisano: '+code;
-    setMessage('KOD JUŻ ISTNIEJE');
-    $('scanBtn').disabled=false;return;
-  }
+/* =========================================================
+   POBIERANIE DANYCH
+   ========================================================= */
 
-  const scan={
-    id:(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random()),
-    code:code,address:null,date:Date.now()
-  };
+async function loadData() {
 
-  try{
-    const r=await api('saveScan',scan);
-    if(!r.ok){setMessage(r.message||'BŁĄD ZAPISU');$('scanBtn').disabled=false;return}
-    scans.push(scan);updateCounter();
-    $('lastCode').textContent='Ostatni skan: '+code;
-    setMessage('OK — OCZEKUJE NA ADRES');
-  }catch(e){setMessage('BŁĄD ZAPISU: '+e.message)}
-  $('scanBtn').disabled=false;
+    setMessage(
+        'Pobieranie danych...'
+    );
+
+
+    try {
+
+        const result =
+            await api(
+                'getData'
+            );
+
+
+        scans =
+            result.scans || [];
+
+
+        updateCounter();
+
+
+        const last =
+            [...scans]
+                .reverse()
+                .find(
+                    scan =>
+                        scan.address
+                );
+
+
+        if (last) {
+
+            currentAddress =
+                last.address;
+
+
+            $('address').textContent =
+                formatAddress(
+                    last.address
+                );
+
+        }
+
+
+        setMessage(
+            'Gotowy'
+        );
+
+
+    } catch (error) {
+
+        setMessage(
+            'BŁĄD: ' +
+            error.message
+        );
+
+    }
+
 }
 
-function showAddressDialog(){
-  const pending=scans.filter(s=>!s.deleted&&!s.address).length;
-  if(!pending){alert('Brak kodów oczekujących na adres');return}
 
-  openDialog('PODAJ ADRES',
-    '<p>Oczekujących kodów: '+pending+'</p><p>Zakres: 601001 – 614107</p><input id="addressInput" inputmode="numeric" maxlength="6" placeholder="np. 601001">',
-    [['ANULUJ',closeDialog],['OK',assignAddressFromDialog]]);
+/* =========================================================
+   ZATRZYMANIE APARATU
+   ========================================================= */
+
+function stopScanner() {
+
+    if (scanner) {
+
+        scanner
+            .stop()
+            .catch(() => {})
+            .finally(() => {
+
+                $('reader').style.display =
+                    'none';
+
+                cameraRunning =
+                    false;
+
+                scanner =
+                    null;
+
+            });
+
+    } else {
+
+        $('reader').style.display =
+            'none';
+
+        cameraRunning =
+            false;
+
+    }
+
+
+    takingDoubleScan =
+        false;
+
+    firstCode =
+        null;
+
+    firstDetectionTime =
+        0;
+
+
+    $('scanBtn').disabled =
+        false;
+
 }
 
-async function assignAddressFromDialog(){
-  const a=$('addressInput').value.trim();
-  if(!validAddress(a)){alert('Adres musi mieć format 601001 i zakres 601001–614107');return}
 
-  try{
-    const r=await api('assignAddress',{address:a});
-    scans.forEach(s=>{if(!s.deleted&&!s.address)s.address=a});
-    currentAddress=a;$('address').textContent=formatAddress(a);
-    $('lastCode').textContent='Przypisano '+r.count+' kodów';
-    setMessage('✓ '+r.count+' kodów zapisano w Google');
-    closeDialog();
-  }catch(e){alert(e.message)}
+/* =========================================================
+   URUCHOMIENIE APARATU
+   ========================================================= */
+
+async function startScanner() {
+
+    if (cameraRunning) {
+
+        beginDoubleCapture();
+
+        return;
+
+    }
+
+
+    $('reader').style.display =
+        'block';
+
+
+    setMessage(
+        'Uruchamianie aparatu...'
+    );
+
+
+    try {
+
+        if (
+            typeof Html5Qrcode ===
+            'undefined'
+        ) {
+
+            throw new Error(
+                'Biblioteka skanera jeszcze się ładuje.'
+            );
+
+        }
+
+
+        scanner =
+            new Html5Qrcode(
+                'reader'
+            );
+
+
+        await scanner.start(
+
+            {
+                facingMode:
+                    'environment'
+            },
+
+            {
+                fps: 10,
+
+                qrbox: {
+                    width: 280,
+                    height: 180
+                },
+
+                aspectRatio:
+                    1.777
+            },
+
+            decoded =>
+                handleDetectedCode(
+                    decoded
+                ),
+
+            () => {}
+
+        );
+
+
+        cameraRunning =
+            true;
+
+
+        setMessage(
+            'Gotowy'
+        );
+
+
+        beginDoubleCapture();
+
+
+    } catch (error) {
+
+        stopScanner();
+
+
+        setMessage(
+            'Nie udało się uruchomić aparatu.'
+        );
+
+
+        alert(
+            'Nie udało się uruchomić aparatu.\n\n' +
+            'Sprawdź uprawnienie aparatu oraz czy strona działa przez HTTPS.'
+        );
+
+    }
+
 }
 
-function showPreview(){
-  hideAll();$('previewView').classList.remove('hidden');
-  const groups={};
-  scans.forEach(s=>{const k=s.address||'BEZ ADRESU';(groups[k]??=[]).push(s)});
-  const keys=Object.keys(groups).sort(),c=$('previewContainer');c.innerHTML='';
 
-  if(!keys.length){c.innerHTML='<div class="card">BRAK ZAPISANYCH SKANÓW</div>';return}
+/* =========================================================
+   PODWÓJNY ODCZYT
+   ========================================================= */
 
-  keys.forEach(a=>{
-    const h=document.createElement('div');h.className='card-head';
-    h.textContent=formatAddress(a)+' — '+groups[a].length;c.appendChild(h);
+function beginDoubleCapture() {
 
-    groups[a].forEach(s=>{
-      const card=document.createElement('div');card.className='card';
-      const code=document.createElement('div');code.className='card-code';code.textContent=s.code;
-      const ad=document.createElement('div');ad.className='card-address';
-      ad.textContent=s.address?'Adres: '+formatAddress(s.address):'Adres: OCZEKUJE NA ADRES';
+    if (
+        takingDoubleScan
+    ) {
 
-      const bs=document.createElement('div');bs.className='row-buttons';
-      const ed=document.createElement('button');ed.textContent='EDYTUJ';ed.onclick=()=>editScan(s);
-      const de=document.createElement('button');de.textContent='USUŃ';de.className='danger';de.onclick=()=>deleteScanConfirm(s);
-      bs.append(ed,de);card.append(code,ad,bs);c.appendChild(card);
-    });
-  });
+        return;
+
+    }
+
+
+    firstCode =
+        null;
+
+
+    firstDetectionTime =
+        0;
+
+
+    takingDoubleScan =
+        true;
+
+
+    $('scanBtn').disabled =
+        true;
+
+
+    setMessage(
+        'Skanowanie...'
+    );
+
 }
 
-function editScan(s){
-  openDialog('EDYTUJ SKAN',
-    '<input id="editCode" value="'+escapeHtml(s.code)+'" placeholder="Kod"><br><br><input id="editAddress" inputmode="numeric" maxlength="6" value="'+escapeHtml(s.address||'')+'" placeholder="Adres np. 601001">',
-    [['ANULUJ',closeDialog],['ZAPISZ',()=>saveEdit(s)]]);
+
+/* =========================================================
+   ODCZYT KODU
+   ========================================================= */
+
+function handleDetectedCode(
+    code
+) {
+
+    code =
+        String(
+            code || ''
+        ).trim();
+
+
+    if (
+        !takingDoubleScan ||
+        !code
+    ) {
+
+        return;
+
+    }
+
+
+    if (
+        firstCode === null
+    ) {
+
+        firstCode =
+            code;
+
+
+        firstDetectionTime =
+            Date.now();
+
+
+        return;
+
+    }
+
+
+    if (
+        Date.now() -
+        firstDetectionTime <
+        150
+    ) {
+
+        return;
+
+    }
+
+
+    const second =
+        code;
+
+
+    takingDoubleScan =
+        false;
+
+
+    if (
+        firstCode === second
+    ) {
+
+        processAcceptedCode(
+            firstCode
+        );
+
+    } else {
+
+        $('lastCode').textContent =
+            'Kod nie został zapisany';
+
+
+        setMessage(
+            'ROZBIEŻNOŚĆ — PONÓW SKAN'
+        );
+
+
+        firstCode =
+            null;
+
+
+        $('scanBtn').disabled =
+            false;
+
+    }
+
 }
 
-async function saveEdit(s){
-  const code=$('editCode').value.trim(),a=$('editAddress').value.trim();
-  if(!code){alert('Wpisz kod');return}
-  if(!validAddress(a)){alert('Nieprawidłowy adres');return}
 
-  try{
-    const r=await api('updateScan',{id:s.id,code:code,address:a});
-    if(!r.ok){alert(r.message||'Nie udało się zapisać');return}
-    const local=scans.find(x=>x.id===s.id);
-    if(local){local.code=code;local.address=a}
-    closeDialog();showPreview();setMessage('Zapisano zmianę');
-  }catch(e){alert(e.message)}
+/* =========================================================
+   ZAPIS KODU
+   ========================================================= */
+
+async function processAcceptedCode(
+    code
+) {
+
+    firstCode =
+        null;
+
+
+    if (
+        scans.some(
+            scan =>
+                !scan.deleted &&
+                scan.code === code
+        )
+    ) {
+
+        $('lastCode').textContent =
+            'Nie zapisano: ' +
+            code;
+
+
+        setMessage(
+            'KOD JUŻ ISTNIEJE'
+        );
+
+
+        $('scanBtn').disabled =
+            false;
+
+
+        return;
+
+    }
+
+
+    const scan = {
+
+        id:
+            (
+                crypto.randomUUID
+                    ? crypto.randomUUID()
+                    :
+                    String(
+                        Date.now()
+                    ) +
+                    Math.random()
+            ),
+
+        code:
+            code,
+
+        address:
+            null,
+
+        date:
+            Date.now()
+
+    };
+
+
+    try {
+
+        const result =
+            await api(
+                'saveScan',
+                scan
+            );
+
+
+        if (
+            !result.ok
+        ) {
+
+            setMessage(
+                result.message ||
+                'BŁĄD ZAPISU'
+            );
+
+
+            $('scanBtn').disabled =
+                false;
+
+
+            return;
+
+        }
+
+
+        scans.push(
+            scan
+        );
+
+
+        updateCounter();
+
+
+        $('lastCode').textContent =
+            'Ostatni skan: ' +
+            code;
+
+
+        setMessage(
+            'OK — OCZEKUJE NA ADRES'
+        );
+
+
+    } catch (error) {
+
+        setMessage(
+            'BŁĄD ZAPISU: ' +
+            error.message
+        );
+
+    }
+
+
+    $('scanBtn').disabled =
+        false;
+
 }
 
-function deleteScanConfirm(s){
-  openDialog('USUŃ SKAN','<p>Czy na pewno usunąć kod <b>'+escapeHtml(s.code)+'</b>?</p>',
-    [['ANULUJ',closeDialog],['USUŃ',()=>performDelete(s)]]);
+
+/* =========================================================
+   OKNO ADRESU
+   ========================================================= */
+
+function showAddressDialog() {
+
+    const pending =
+        scans.filter(
+            scan =>
+                !scan.deleted &&
+                !scan.address
+        ).length;
+
+
+    if (
+        !pending
+    ) {
+
+        alert(
+            'Brak kodów oczekujących na adres'
+        );
+
+
+        return;
+
+    }
+
+
+    openDialog(
+
+        'PODAJ ADRES',
+
+        '<p>Oczekujących kodów: ' +
+        pending +
+        '</p>' +
+
+        '<p>Zakres: 601001 – 614107</p>' +
+
+        '<input ' +
+        'id="addressInput" ' +
+        'inputmode="numeric" ' +
+        'maxlength="6" ' +
+        'placeholder="np. 601001">',
+
+        [
+
+            [
+                'ANULUJ',
+                closeDialog
+            ],
+
+            [
+                'OK',
+                assignAddressFromDialog
+            ]
+
+        ]
+
+    );
+
 }
 
-async function performDelete(s){
-  try{
-    await api('deleteScan',{id:s.id});
-    scans=scans.filter(x=>x.id!==s.id);updateCounter();
-    closeDialog();showPreview();setMessage('Usunięto skan');
-  }catch(e){alert(e.message)}
+
+/* =========================================================
+   PRZYPISANIE ADRESU
+   ========================================================= */
+
+async function assignAddressFromDialog() {
+
+    const address =
+        $('addressInput')
+            .value
+            .trim();
+
+
+    if (
+        !validAddress(
+            address
+        )
+    ) {
+
+        alert(
+            'Adres musi mieć format 601001 i zakres 601001–614107'
+        );
+
+
+        return;
+
+    }
+
+
+    try {
+
+        const result =
+            await api(
+                'assignAddress',
+                {
+                    address:
+                        address
+                }
+            );
+
+
+        scans.forEach(
+            scan => {
+
+                if (
+                    !scan.deleted &&
+                    !scan.address
+                ) {
+
+                    scan.address =
+                        address;
+
+                }
+
+            }
+        );
+
+
+        currentAddress =
+            address;
+
+
+        $('address').textContent =
+            formatAddress(
+                address
+            );
+
+
+        $('lastCode').textContent =
+            'Przypisano ' +
+            result.count +
+            ' kodów';
+
+
+        setMessage(
+            '✓ ' +
+            result.count +
+            ' kodów zapisano w Google'
+        );
+
+
+        closeDialog();
+
+
+    } catch (error) {
+
+        alert(
+            error.message
+        );
+
+    }
+
 }
 
-function showSearch(){hideAll();$('searchView').classList.remove('hidden');$('searchInput').focus()}
 
-function runSearch(){
-  const q=$('searchInput').value.trim();
-  if(!q){$('searchResult').textContent='Wpisz fragment kodu i kliknij SZUKAJ';return}
+/* =========================================================
+   PODGLĄD
+   ========================================================= */
 
-  const results=scans.filter(s=>s.code.toLowerCase().includes(q.toLowerCase()));
-  if(!results.length){$('searchResult').textContent='BRAK WYNIKU\n\nSzukany fragment:\n'+q;return}
+function showPreview() {
 
-  let html='<div class="card"><b>ZNALEZIONO: '+results.length+'</b></div>';
-  results.forEach((s,i)=>{
-    html+='<div class="card"><div class="card-code">'+(i+1)+'. '+escapeHtml(s.code)+'</div><div class="card-address">ADRES: '+(s.address?escapeHtml(formatAddress(s.address)):'OCZEKUJE NA ADRES')+'</div></div>';
-  });
-  $('searchResult').innerHTML=html;
+    hideAll();
+
+
+    $('previewView')
+        .classList
+        .remove(
+            'hidden'
+        );
+
+
+    const groups = {};
+
+
+    scans.forEach(
+        scan => {
+
+            const key =
+                scan.address ||
+                'BEZ ADRESU';
+
+
+            if (
+                !groups[key]
+            ) {
+
+                groups[key] =
+                    [];
+
+            }
+
+
+            groups[key].push(
+                scan
+            );
+
+        }
+    );
+
+
+    const keys =
+        Object.keys(
+            groups
+        ).sort();
+
+
+    const container =
+        $('previewContainer');
+
+
+    container.innerHTML =
+        '';
+
+
+    if (
+        !keys.length
+    ) {
+
+        container.innerHTML =
+            '<div class="card">' +
+            'BRAK ZAPISANYCH SKANÓW' +
+            '</div>';
+
+
+        return;
+
+    }
+
+
+    keys.forEach(
+        address => {
+
+            const header =
+                document.createElement(
+                    'div'
+                );
+
+
+            header.className =
+                'card-head';
+
+
+            header.textContent =
+                formatAddress(
+                    address
+                ) +
+                ' — ' +
+                groups[address].length;
+
+
+            container.appendChild(
+                header
+            );
+
+
+            groups[address].forEach(
+                scan => {
+
+                    const card =
+                        document.createElement(
+                            'div'
+                        );
+
+
+                    card.className =
+                        'card';
+
+
+                    const code =
+                        document.createElement(
+                            'div'
+                        );
+
+
+                    code.className =
+                        'card-code';
+
+
+                    code.textContent =
+                        scan.code;
+
+
+                    const addr =
+                        document.createElement(
+                            'div'
+                        );
+
+
+                    addr.className =
+                        'card-address';
+
+
+                    addr.textContent =
+                        scan.address
+                            ?
+                            'Adres: ' +
+                            formatAddress(
+                                scan.address
+                            )
+                            :
+                            'Adres: OCZEKUJE NA ADRES';
+
+
+                    const buttons =
+                        document.createElement(
+                            'div'
+                        );
+
+
+                    buttons.className =
+                        'row-buttons';
+
+
+                    const edit =
+                        document.createElement(
+                            'button'
+                        );
+
+
+                    edit.textContent =
+                        'EDYTUJ';
+
+
+                    edit.onclick =
+                        () =>
+                            editScan(
+                                scan
+                            );
+
+
+                    const remove =
+                        document.createElement(
+                            'button'
+                        );
+
+
+                    remove.textContent =
+                        'USUŃ';
+
+
+                    remove.className =
+                        'danger';
+
+
+                    remove.onclick =
+                        () =>
+                            deleteScanConfirm(
+                                scan
+                            );
+
+
+                    buttons.append(
+                        edit,
+                        remove
+                    );
+
+
+                    card.append(
+                        code,
+                        addr,
+                        buttons
+                    );
+
+
+                    container.appendChild(
+                        card
+                    );
+
+                }
+            );
+
+        }
+    );
+
 }
 
-function showGoogle(){hideAll();$('googleView').classList.remove('hidden')}
 
-async function reloadData(){
-  $('googleStatus').textContent='Pobieranie...';
-  await loadData();$('googleStatus').textContent='Dane pobrane';
+/* =========================================================
+   EDYCJA
+   ========================================================= */
+
+function editScan(scan) {
+
+    openDialog(
+
+        'EDYTUJ SKAN',
+
+        '<input id="editCode" value="' +
+        escapeHtml(
+            scan.code
+        ) +
+        '" placeholder="Kod">' +
+
+        '<br><br>' +
+
+        '<input id="editAddress" ' +
+        'inputmode="numeric" ' +
+        'maxlength="6" ' +
+        'value="' +
+        escapeHtml(
+            scan.address || ''
+        ) +
+        '" placeholder="Adres np. 601001">',
+
+        [
+
+            [
+                'ANULUJ',
+                closeDialog
+            ],
+
+            [
+                'ZAPISZ',
+                () =>
+                    saveEdit(
+                        scan
+                    )
+            ]
+
+        ]
+
+    );
+
 }
 
-async function backupData(){
-  $('googleStatus').textContent='Tworzenie kopii...';
-  try{
-    const r=await api('exportJson');
-    $('googleStatus').textContent='Utworzono: '+r.name;
-  }catch(e){$('googleStatus').textContent='BŁĄD: '+e.message}
+
+/* =========================================================
+   ZAPIS EDYCJI
+   ========================================================= */
+
+async function saveEdit(
+    scan
+) {
+
+    const code =
+        $('editCode')
+            .value
+            .trim();
+
+
+    const address =
+        $('editAddress')
+            .value
+            .trim();
+
+
+    if (
+        !code
+    ) {
+
+        alert(
+            'Wpisz kod'
+        );
+
+
+        return;
+
+    }
+
+
+    if (
+        !validAddress(
+            address
+        )
+    ) {
+
+        alert(
+            'Nieprawidłowy adres'
+        );
+
+
+        return;
+
+    }
+
+
+    try {
+
+        const result =
+            await api(
+                'updateScan',
+                {
+                    id:
+                        scan.id,
+
+                    code:
+                        code,
+
+                    address:
+                        address
+                }
+            );
+
+
+        if (
+            !result.ok
+        ) {
+
+            alert(
+                result.message ||
+                'Nie udało się zapisać'
+            );
+
+
+            return;
+
+        }
+
+
+        const local =
+            scans.find(
+                item =>
+                    item.id ===
+                    scan.id
+            );
+
+
+        if (local) {
+
+            local.code =
+                code;
+
+
+            local.address =
+                address;
+
+        }
+
+
+        closeDialog();
+
+
+        showPreview();
+
+
+        setMessage(
+            'Zapisano zmianę'
+        );
+
+
+    } catch (error) {
+
+        alert(
+            error.message
+        );
+
+    }
+
 }
 
-function hideAll(){['mainView','previewView','searchView','googleView'].forEach(id=>$(id).classList.add('hidden'))}
-function showMain(){hideAll();$('mainView').classList.remove('hidden')}
 
-function openDialog(title,body,buttons){
-  $('dialogTitle').textContent=title;$('dialogBody').innerHTML=body;
-  const box=$('dialogButtons');box.innerHTML='';
-  buttons.forEach(([label,fn])=>{const b=document.createElement('button');b.textContent=label;b.onclick=fn;box.appendChild(b)});
-  $('modal').classList.remove('hidden');
+/* =========================================================
+   USUWANIE
+   ========================================================= */
+
+function deleteScanConfirm(
+    scan
+) {
+
+    openDialog(
+
+        'USUŃ SKAN',
+
+        '<p>Czy na pewno usunąć kod <b>' +
+        escapeHtml(
+            scan.code
+        ) +
+        '</b>?</p>',
+
+        [
+
+            [
+                'ANULUJ',
+                closeDialog
+            ],
+
+            [
+                'USUŃ',
+                () =>
+                    performDelete(
+                        scan
+                    )
+            ]
+
+        ]
+
+    );
+
 }
-function closeDialog(){$('modal').classList.add('hidden')}
-function escapeHtml(v){return String(v||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;').replaceAll("'","&#039;")}
 
-$('scanBtn').onclick=startScanner;
-$('addressBtn').onclick=showAddressDialog;
-$('previewBtn').onclick=showPreview;
-$('searchBtn').onclick=showSearch;
-$('googleBtn').onclick=showGoogle;
-window.addEventListener('load',loadData);
-window.addEventListener('beforeunload',stopScanner);
+
+/* =========================================================
+   WYKONANIE USUNIĘCIA
+   ========================================================= */
+
+async function performDelete(
+    scan
+) {
+
+    try {
+
+        await api(
+            'deleteScan',
+            {
+                id:
+                    scan.id
+            }
+        );
+
+
+        scans =
+            scans.filter(
+                item =>
+                    item.id !==
+                    scan.id
+            );
+
+
+        updateCounter();
+
+
+        closeDialog();
+
+
+        showPreview();
+
+
+        setMessage(
+            'Usunięto skan'
+        );
+
+
+    } catch (error) {
+
+        alert(
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =========================================================
+   SZUKANIE
+   ========================================================= */
+
+function showSearch() {
+
+    hideAll();
+
+
+    $('searchView')
+        .classList
+        .remove(
+            'hidden'
+        );
+
+
+    $('searchInput')
+        .focus();
+
+}
+
+
+/* =========================================================
+   WYKONANIE SZUKANIA
+   ========================================================= */
+
+function runSearch() {
+
+    const query =
+        $('searchInput')
+            .value
+            .trim();
+
+
+    if (
+        !query
+    ) {
+
+        $('searchResult')
+            .textContent =
+            'Wpisz fragment kodu i kliknij SZUKAJ';
+
+
+        return;
+
+    }
+
+
+    const results =
+        scans.filter(
+            scan =>
+                scan.code
+                    .toLowerCase()
+                    .includes(
+                        query.toLowerCase()
+                    )
+        );
+
+
+    if (
+        !results.length
+    ) {
+
+        $('searchResult')
+            .textContent =
+            'BRAK WYNIKU\n\n' +
+            'Szukany fragment:\n' +
+            query;
+
+
+        return;
+
+    }
+
+
+    let html =
+        '<div class="card">' +
+        '<b>ZNALEZIONO: ' +
+        results.length +
+        '</b></div>';
+
+
+    results.forEach(
+        (
+            scan,
+            index
+        ) => {
+
+            html +=
+                '<div class="card">' +
+
+                '<div class="card-code">' +
+
+                (
+                    index + 1
+                ) +
+
+                '. ' +
+
+                escapeHtml(
+                    scan.code
+                ) +
+
+                '</div>' +
+
+                '<div class="card-address">' +
+
+                'ADRES: ' +
+
+                (
+                    scan.address
+                        ?
+                        escapeHtml(
+                            formatAddress(
+                                scan.address
+                            )
+                        )
+                        :
+                        'OCZEKUJE NA ADRES'
+                ) +
+
+                '</div>' +
+
+                '</div>';
+
+        }
+    );
+
+
+    $('searchResult')
+        .innerHTML =
+        html;
+
+}
+
+
+/* =========================================================
+   GOOGLE
+   ========================================================= */
+
+function showGoogle() {
+
+    hideAll();
+
+
+    $('googleView')
+        .classList
+        .remove(
+            'hidden'
+        );
+
+}
+
+
+/* =========================================================
+   PONOWNE POBRANIE
+   ========================================================= */
+
+async function reloadData() {
+
+    $('googleStatus')
+        .textContent =
+        'Pobieranie...';
+
+
+    await loadData();
+
+
+    $('googleStatus')
+        .textContent =
+        'Dane pobrane';
+
+}
+
+
+/* =========================================================
+   BACKUP
+   ========================================================= */
+
+async function backupData() {
+
+    $('googleStatus')
+        .textContent =
+        'Tworzenie kopii...';
+
+
+    try {
+
+        const result =
+            await api(
+                'exportJson'
+            );
+
+
+        $('googleStatus')
+            .textContent =
+            'Utworzono: ' +
+            result.name;
+
+
+    } catch (error) {
+
+        $('googleStatus')
+            .textContent =
+            'BŁĄD: ' +
+            error.message;
+
+    }
+
+}
+
+
+/* =========================================================
+   NAWIGACJA
+   ========================================================= */
+
+function hideAll() {
+
+    [
+
+        'mainView',
+        'previewView',
+        'searchView',
+        'googleView'
+
+    ].forEach(
+        id => {
+
+            $(id)
+                .classList
+                .add(
+                    'hidden'
+                );
+
+        }
+    );
+
+}
+
+
+function showMain() {
+
+    hideAll();
+
+
+    $('mainView')
+        .classList
+        .remove(
+            'hidden'
+        );
+
+}
+
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+function openDialog(
+    title,
+    body,
+    buttons
+) {
+
+    $('dialogTitle')
+        .textContent =
+        title;
+
+
+    $('dialogBody')
+        .innerHTML =
+        body;
+
+
+    const box =
+        $('dialogButtons');
+
+
+    box.innerHTML =
+        '';
+
+
+    buttons.forEach(
+        (
+            item
+        ) => {
+
+            const button =
+                document.createElement(
+                    'button'
+                );
+
+
+            button.textContent =
+                item[0];
+
+
+            button.onclick =
+                item[1];
+
+
+            box.appendChild(
+                button
+            );
+
+        }
+    );
+
+
+    $('modal')
+        .classList
+        .remove(
+            'hidden'
+        );
+
+}
+
+
+function closeDialog() {
+
+    $('modal')
+        .classList
+        .add(
+            'hidden'
+        );
+
+}
+
+
+/* =========================================================
+   OCHRONA HTML
+   ========================================================= */
+
+function escapeHtml(
+    value
+) {
+
+    return String(
+        value || ''
+    )
+
+        .replaceAll(
+            '&',
+            '&amp;'
+        )
+
+        .replaceAll(
+            '<',
+            '&lt;'
+        )
+
+        .replaceAll(
+            '>',
+            '&gt;'
+        )
+
+        .replaceAll(
+            '"',
+            '&quot;'
+        )
+
+        .replaceAll(
+            "'",
+            '&#039;'
+        );
+
+}
+
+
+/* =========================================================
+   PRZYCISKI
+   ========================================================= */
+
+$('scanBtn')
+    .onclick =
+    startScanner;
+
+
+$('addressBtn')
+    .onclick =
+    showAddressDialog;
+
+
+$('previewBtn')
+    .onclick =
+    showPreview;
+
+
+$('searchBtn')
+    .onclick =
+    showSearch;
+
+
+$('googleBtn')
+    .onclick =
+    showGoogle;
+
+
+/* =========================================================
+   START
+   ========================================================= */
+
+window.addEventListener(
+    'load',
+    loadData
+);
+
+
+window.addEventListener(
+    'beforeunload',
+    stopScanner
+);
+
 </script>
+
 </body>
 </html>
