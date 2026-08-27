@@ -323,14 +323,52 @@ body {
 
     width: 100%;
 
+    min-height: 320px;
+
+    height: 320px;
+
     overflow: hidden;
+
+    position: relative;
+
+    background: #111111;
+
+    border-radius: 8px;
+}
+
+#reader > div {
+
+    width: 100% !important;
+
+    min-height: 320px !important;
+
+    height: 320px !important;
+}
+
+#reader__scan_region {
+
+    width: 100% !important;
+
+    min-height: 320px !important;
+
+    height: 320px !important;
+
+    position: relative !important;
 }
 
 #reader video {
 
+    display: block !important;
+
     width: 100% !important;
 
-    height: auto !important;
+    height: 320px !important;
+
+    min-height: 320px !important;
+
+    object-fit: cover !important;
+
+    background: #111111;
 }
 
 .scanner-status {
