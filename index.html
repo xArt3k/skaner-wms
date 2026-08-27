@@ -2285,16 +2285,16 @@ async function armScan() {
         const first =
             await decodeBarcodeFast(
                 $('cameraVideo'),
-                1800
+                3500
             );
 
         // Prawie natychmiast drugi odczyt.
-        await wait(80);
+        await wait(100);
 
         const second =
             await decodeBarcodeFast(
                 $('cameraVideo'),
-                1800
+                3500
             );
 
         /*
@@ -2349,138 +2349,85 @@ async function armScan() {
 
 async function decodeBarcodeFast(video, timeoutMs) {
 
-    if (
-        !video ||
-        video.readyState < 2 ||
-        !video.videoWidth ||
-        !video.videoHeight
-    ) {
+    if (!video || video.readyState < 2) {
         return null;
     }
 
+    if (typeof ZXingBrowser === 'undefined') {
+        console.error('ZXing nie został załadowany.');
+        return null;
+    }
+
+    if (!barcodeReader) {
+        barcodeReader =
+            new ZXingBrowser.BrowserMultiFormatReader();
+    }
+
     /*
-     * 1. Natywny BarcodeDetector — bardzo szybki,
-     * jeżeli przeglądarka telefonu go obsługuje.
+     * Nie próbujemy dekodować jednej przypadkowej klatki.
+     * ZXing obserwuje obraz kamery aż znajdzie kod.
+     * To jest dużo skuteczniejsze dla EAN/Code128 niż
+     * pojedyncze zdjęcie.
      */
-    if ('BarcodeDetector' in window) {
+    return await new Promise(resolve => {
+
+        let done = false;
+
+        const finish = value => {
+
+            if (done) return;
+
+            done = true;
+
+            try {
+                barcodeReader.reset();
+            } catch (_) {}
+
+            if (timer) {
+                clearTimeout(timer);
+            }
+
+            resolve(
+                value
+                    ? String(value).trim()
+                    : null
+            );
+        };
+
+        const timer =
+            setTimeout(
+                () => finish(null),
+                timeoutMs
+            );
 
         try {
 
-            const formats = [
-                'qr_code',
-                'ean_13',
-                'ean_8',
-                'upc_a',
-                'upc_e',
-                'code_128',
-                'code_39',
-                'code_93',
-                'itf'
-            ];
-
-            let detector;
-
-            try {
-                detector =
-                    new BarcodeDetector({
-                        formats
-                    });
-            } catch (_) {
-                detector =
-                    new BarcodeDetector();
-            }
-
-            const started = Date.now();
-
-            while (
-                Date.now() - started <
-                timeoutMs
-            ) {
-
-                try {
-
-                    const found =
-                        await detector.detect(
-                            video
-                        );
+            barcodeReader.decodeFromVideoElement(
+                video,
+                (result, error) => {
 
                     if (
-                        found &&
-                        found.length
+                        result &&
+                        result.text
                     ) {
 
-                        const value =
-                            found[0].rawValue;
-
-                        if (value) {
-                            return String(
-                                value
-                            ).trim();
-                        }
+                        finish(
+                            result.text
+                        );
                     }
+                }
+            );
 
-                } catch (_) {}
+        } catch (error) {
 
-                await wait(40);
-            }
+            console.error(
+                'ZXing error:',
+                error
+            );
 
-        } catch (_) {
-            // Przechodzimy do ZXing.
+            finish(null);
         }
-    }
-
-
-    /*
-     * 2. ZXing MultiFormat — fallback dla telefonów,
-     * które nie mają BarcodeDetector.
-     */
-    if (
-        typeof ZXingBrowser ===
-        'undefined'
-    ) {
-        console.error(
-            'ZXing nie został załadowany.'
-        );
-        return null;
-    }
-
-    try {
-
-        if (!barcodeReader) {
-
-            barcodeReader =
-                new ZXingBrowser.BrowserMultiFormatReader();
-        }
-
-        const result =
-            await Promise.race([
-                barcodeReader
-                    .decodeOnceFromVideoElement(
-                        video
-                    ),
-
-                new Promise(
-                    resolve =>
-                        setTimeout(
-                            () => resolve(null),
-                            timeoutMs
-                        )
-                )
-            ]);
-
-        if (
-            result &&
-            result.text
-        ) {
-
-            return String(
-                result.text
-            ).trim();
-        }
-
-    } catch (_) {}
-
-    return null;
+    });
 }
 
 
