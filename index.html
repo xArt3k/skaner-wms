@@ -960,11 +960,14 @@ async function loadPreviewData(){
          * TYLKO action=get.
          */
 
-        const result =
-            await apiJsonp(
-                DATA_API_URL,
-                'get'
-            );
+const result =
+    await apiJsonp(
+        DATA_API_URL,
+        'get',
+        {
+            token: getToken()
+        }
+    );
 
 
         if(
